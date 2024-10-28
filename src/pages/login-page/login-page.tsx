@@ -1,5 +1,5 @@
 import {Helmet} from 'react-helmet-async';
-import {AppRoute} from "../../const.ts";
+import {AppRoute} from '../../const.ts';
 import {Link} from 'react-router-dom';
 
 function LoginPage(): JSX.Element {
