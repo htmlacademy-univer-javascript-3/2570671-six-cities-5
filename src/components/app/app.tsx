@@ -6,43 +6,50 @@ import OfferPage from '../../pages/offer-page/offer-page.tsx';
 import NotFoundPage from '../../pages/not-found-page/not-found-page.tsx';
 import {AppRoute, AuthorizationStatus} from '../../const.ts';
 import {PrivateRoute} from '../private-route/private-route.tsx';
+import {OfferPreviews} from '../../types/offer-preview.ts';
+import {Offers} from '../../types/offer.ts';
+import {HelmetProvider} from 'react-helmet-async';
 
 type AppProps = {
   offersCount: number;
+  offerPreviews: OfferPreviews;
+  offers: Offers;
 }
 
-function App({ offersCount }: AppProps): JSX.Element {
+function App({offersCount, offerPreviews, offers}: AppProps): JSX.Element {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path={AppRoute.MainPage}
-          element={<MainPage offersCount={offersCount} />}
-        />
-        <Route
-          path={AppRoute.LoginPage}
-          element={<LoginPage />}
-        />
-        <Route
-          path={AppRoute.FavoritesPage}
-          element={
-            <PrivateRoute
-              authorizationStatus={AuthorizationStatus.NoAuth}
-            >
-              <FavoritesPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path={AppRoute.OfferPage}
-          element={<OfferPage />}
-        />
-        <Route
-          path={AppRoute.NotFoundPage}
-          element={<NotFoundPage />}
-        />
-      </Routes>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path={AppRoute.MainPage}
+            element={<MainPage offersCount={offersCount} offers={offerPreviews}/>}
+          />
+          <Route
+            path={AppRoute.LoginPage}
+            element={<LoginPage />}
+          />
+          <Route
+            path={AppRoute.FavoritesPage}
+            element={
+              <PrivateRoute
+                authorizationStatus={AuthorizationStatus.NoAuth}
+              >
+                <FavoritesPage offers={offerPreviews}/>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path={`${AppRoute.OfferPage}/:id`}
+            element={<OfferPage offers={offers}/>}
+          />
+          <Route
+            path={AppRoute.NotFoundPage}
+            element={<NotFoundPage />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
