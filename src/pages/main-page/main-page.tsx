@@ -1,36 +1,28 @@
-import OfferCard from '../../components/offer-card/offer-card.tsx';
+import {OfferPreviews} from '../../types/offer-preview.ts';
+import {Helmet} from 'react-helmet-async';
+import OffersList from '../../components/offers-list/offers-list.tsx';
+import Header from '../../components/header/header';
+import {AppRoute, Cities, SortingOptions} from '../../const.ts';
+import {Link} from 'react-router-dom';
 
 type MainPageProps = {
   offersCount: number;
+  offers: OfferPreviews;
 }
 
-function MainPage({offersCount}: MainPageProps): JSX.Element {
+function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
   return (
     <div className="page page--gray page--main">
+      <Helmet>
+        <title>6 cities</title>
+      </Helmet>
       <header className="header">
         <div className="container">
           <div className="header__wrapper">
-            <div className="header__left">
-              <a className="header__logo-link header__logo-link--active">
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </a>
-            </div>
-            <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper"></div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
-                  </a>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
+            <Link className="header__logo-link" to={AppRoute.MainPage}>
+              <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41"/>
+            </Link>
+            <Header offers={offers}/>
           </div>
         </div>
       </header>
@@ -40,36 +32,13 @@ function MainPage({offersCount}: MainPageProps): JSX.Element {
         <div className="tabs">
           <section className="locations container">
             <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
+              {Cities.map((city) => (
+                <li key={city} className="locations__item">
+                  <a className="locations__item-link tabs__item" href="#">
+                    <span>{city}</span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </section>
         </div>
@@ -88,63 +57,14 @@ function MainPage({offersCount}: MainPageProps): JSX.Element {
                   </svg>
                 </span>
                 <ul className="places__options places__options--custom places__options--opened">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
+                  {SortingOptions.map((option) => (
+                    <li key={option} className="places__option" tabIndex={0}>
+                      {option}
+                    </li>
+                  ))}
                 </ul>
               </form>
-              <div className="cities__places-list places__list tabs__content">
-                <OfferCard
-                  isPremium
-                  imageSrc="img/apartment-01.jpg"
-                  price={120}
-                  title="Beautiful &amp; luxurious apartment at great location"
-                  rating={4}
-                  cardType="Apartment"
-                  isFavorite={false}
-                />
-
-                <OfferCard
-                  isPremium={false}
-                  imageSrc="img/room.jpg"
-                  price={80}
-                  title="Wood and stone place"
-                  rating={4}
-                  cardType="Room"
-                  isFavorite
-                />
-
-                <OfferCard
-                  isPremium={false}
-                  imageSrc="img/apartment-02.jpg"
-                  price={132}
-                  rating={4}
-                  title='Canal View Prinsengracht'
-                  cardType='Apartment'
-                  isFavorite={false}
-                />
-
-                <OfferCard
-                  isPremium
-                  imageSrc="img/apartment-03.jpg"
-                  price={180}
-                  rating={5}
-                  title='Nice, cozy, warm big bed apartment'
-                  cardType='Apartment'
-                  isFavorite={false}
-                />
-
-                <OfferCard
-                  isPremium={false}
-                  imageSrc="img/room.jpg"
-                  price={80}
-                  rating={4}
-                  title='Wood and stone place'
-                  cardType='Room'
-                  isFavorite
-                />
-              </div>
+              <OffersList offers={offers}/>
             </section>
             <div className="cities__right-section">
               <section className="cities__map map"></section>
