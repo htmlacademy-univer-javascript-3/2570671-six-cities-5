@@ -4,6 +4,8 @@ import OffersList from '../../components/offers-list/offers-list.tsx';
 import Header from '../../components/header/header';
 import {AppRoute, Cities, SortingOptions} from '../../const.ts';
 import {Link} from 'react-router-dom';
+import {useState} from 'react';
+import Map from '../../components/map/map.tsx';
 
 type MainPageProps = {
   offersCount: number;
@@ -11,6 +13,9 @@ type MainPageProps = {
 }
 
 function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  const selectedOffer = offers.find((offer) => offer.id === activeOfferId);
+
   return (
     <div className="page page--gray page--main">
       <Helmet>
@@ -64,10 +69,17 @@ function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
                   ))}
                 </ul>
               </form>
-              <OffersList offers={offers}/>
+              <OffersList
+                offers={offers}
+                onActiveOfferChange={setActiveOfferId}
+              />
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <Map
+                city={offers[0].city}
+                offers={offers}
+                selectedOffer={selectedOffer}
+              />
             </div>
           </div>
         </div>
