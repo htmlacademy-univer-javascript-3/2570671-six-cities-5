@@ -7,6 +7,8 @@ import ReviewSendingForm from '../../components/review-sending-form/review-sendi
 import OffersList from '../../components/offers-list/offers-list';
 import {AppRoute} from '../../const.ts';
 import Header from '../../components/header/header.tsx';
+import ReviewsList from '../../components/reviews-list/reviews-list.tsx';
+import Map from '../../components/map/map.tsx';
 
 export type OfferPageProps = {
   offers: Offers;
@@ -16,6 +18,7 @@ export type OfferPageProps = {
 function OfferPage({offers}: OfferPageProps): JSX.Element {
   const params = useParams();
   const offer = offers.find((item) => item.id === params.id);
+  const threeNearbyOffers = offers.filter((otherOffer) => otherOffer.id !== offer?.id).slice(0, 3);
 
   if (!offer) {
     return <NotFoundPage />;
@@ -117,38 +120,26 @@ function OfferPage({offers}: OfferPageProps): JSX.Element {
               </div>
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
-                <ul className="reviews__list">
-                  {reviews.map((review) => (
-                    <li key={review.id} className="reviews__item">
-                      <div className="reviews__user user">
-                        <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                          <img className="reviews__avatar user__avatar" src={review.user.avatarUrl} width="54" height="54" alt="Reviews avatar" />
-                        </div>
-                        <span className="reviews__user-name">{review.user.name}</span>
-                      </div>
-                      <div className="reviews__info">
-                        <div className="reviews__rating rating">
-                          <div className="reviews__stars rating__stars">
-                            <span style={{ width: `${(review.rating / 5) * 100}%` }}></span>
-                            <span className="visually-hidden">Rating</span>
-                          </div>
-                        </div>
-                        <p className="reviews__text">{review.comment}</p>
-                        <time className="reviews__time" dateTime={new Date(review.date).toISOString()}>{new Date(review.date).toLocaleString('default', { month: 'long', year: 'numeric' })}</time>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <ReviewsList
+                  reviews={reviews}
+                />
                 <ReviewSendingForm />
               </section>
             </div>
           </div>
-          <section className="offer__map map"></section>
+          <Map
+            city={offer.city}
+            offers={threeNearbyOffers}
+            selectedOffer={undefined}
+          />
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <OffersList offers={offers} />
+            <OffersList
+              offers={threeNearbyOffers}
+              onActiveOfferChange={() => {}}
+            />
           </section>
         </div>
       </main>
