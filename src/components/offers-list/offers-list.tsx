@@ -1,14 +1,19 @@
 import {OfferPreviews} from '../../types/offer-preview.ts';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import OfferCard from '../offer-card/offer-card.tsx';
 import {Offers} from '../../types/offer';
 
 type OffersListProps = {
   offers: OfferPreviews | Offers;
+  onActiveOfferChange: (offerId: string | null) => void;
 }
 
-function OffersList({offers}: OffersListProps): JSX.Element {
-  const [, setActiveOfferId] = useState<string | null>(null);
+function OffersList({offers, onActiveOfferChange}: OffersListProps): JSX.Element {
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+
+  useEffect(() => {
+    onActiveOfferChange(activeOfferId);
+  }, [activeOfferId, onActiveOfferChange]);
 
   const handleMouseEnter = (offerId: string) => {
     setActiveOfferId(offerId);
