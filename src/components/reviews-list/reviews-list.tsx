@@ -6,19 +6,23 @@ type ReviewsListProps = {
 }
 
 function ReviewsList({reviews}: ReviewsListProps): JSX.Element {
-  if (!reviews) {
-    return <p style={{textAlign: 'center', fontSize: '32px'}}>Be the first to review!</p>;
-  }
-
   return (
-    <ul className="reviews__list">
-      {reviews.map((review) => (
-        <ReviewItem
-          key={review.id}
-          review={review}
-        />
-      ))}
-    </ul>
+    <div>
+      {reviews ? (
+        <ul className="reviews__list">
+          {reviews.map((review) => (
+            <ReviewItem
+              key={review.id}
+              review={review}
+            />
+          ))}
+        </ul>
+      ) : (
+        <p style={{textAlign: 'center', fontSize: '32px'}}>
+              Be the first to review!
+        </p>
+      )}
+    </div>
   );
 }
 

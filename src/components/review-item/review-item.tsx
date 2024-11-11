@@ -24,7 +24,14 @@ function ReviewItem({review}: ReviewItemProps): JSX.Element{
         <p className="reviews__text">
           {review.comment}
         </p>
-        <time className="reviews__time" dateTime={review.date}>   {new Date(review.date).toLocaleString('default', { month: 'long', year: 'numeric' })}</time>
+        <time
+          className="reviews__time"
+          dateTime={review.date}
+        >
+          {new Date(review.date).toLocaleString('default', {
+            month: 'long', year: 'numeric'
+          })}
+        </time>
       </div>
     </li>
   );
