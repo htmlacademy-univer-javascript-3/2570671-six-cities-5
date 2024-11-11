@@ -4,10 +4,11 @@ import {URL_MARKER_CURRENT, URL_MARKER_DEFAULT} from '../../const.ts';
 import {useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map.tsx';
 import {OfferPreview, OfferPreviews} from '../../types/offer-preview.ts';
+import {Offers} from '../../types/offer.ts';
 
 type MapProps = {
   city: City;
-  offers: OfferPreviews;
+  offers: OfferPreviews | Offers;
   selectedOffer: OfferPreview | undefined;
 };
 
@@ -54,8 +55,7 @@ function Map(props: MapProps): JSX.Element {
       className="cities__map map"
       style={{ height: '500px' }}
       ref={mapRef}
-      // eslint-disable-next-line react/jsx-closing-tag-location
-    ></div>
+    />
   );
 }
 

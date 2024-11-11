@@ -5,13 +5,19 @@ import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import {AppRoute} from '../../const.ts';
 import {Link} from 'react-router-dom';
+import {useState} from 'react';
 
 type FavoritesScreenProps = {
   offers: OfferPreviews;
 };
 
 function FavoritesPage({offers}: FavoritesScreenProps): JSX.Element {
+  const [, setActiveOfferId] = useState<string | null>(null);
   const favoriteOffers = offers.filter((offerPreview) => offerPreview.isBookmarked);
+
+  const handleActiveOfferChange = (offerId: string | null) => {
+    setActiveOfferId(offerId);
+  };
 
   return (
     <div className="page">
@@ -35,7 +41,10 @@ function FavoritesPage({offers}: FavoritesScreenProps): JSX.Element {
         <div className="page__favorites-container container">
           <section className="favorites">
             <h1 className="favorites__title">Saved listing</h1>
-            <OffersList offers={favoriteOffers}/>
+            <OffersList
+              offers={favoriteOffers}
+              onActiveOfferChange={handleActiveOfferChange}
+            />
           </section>
         </div>
       </main>
