@@ -6,24 +6,25 @@ import OfferPage from '../../pages/offer-page/offer-page.tsx';
 import NotFoundPage from '../../pages/not-found-page/not-found-page.tsx';
 import {AppRoute, AuthorizationStatus} from '../../const.ts';
 import {PrivateRoute} from '../private-route/private-route.tsx';
-import {OfferPreviews} from '../../types/offer-preview.ts';
-import {Offers} from '../../types/offer.ts';
 import {HelmetProvider} from 'react-helmet-async';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {setOffers, setOffersList, setReviews} from '../../store/action.ts';
 
-type AppProps = {
-  offersCount: number;
-  offerPreviews: OfferPreviews;
-  offers: Offers;
-}
-
-function App({offersCount, offerPreviews, offers}: AppProps): JSX.Element {
+function App(): JSX.Element {
+  const offerPreviews = useAppSelector((state) => state.offerPreviewsList);
+  const reviews = useAppSelector((state) => state.reviews);
+  const offers = useAppSelector((state) => state.offers);
+  const dispatch = useAppDispatch();
+  dispatch(setOffersList(offerPreviews));
+  dispatch(setReviews(reviews));
+  dispatch(setOffers(offers));
   return (
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
           <Route
             path={AppRoute.MainPage}
-            element={<MainPage offersCount={offersCount} offers={offerPreviews}/>}
+            element={<MainPage />}
           />
           <Route
             path={AppRoute.LoginPage}
@@ -35,13 +36,13 @@ function App({offersCount, offerPreviews, offers}: AppProps): JSX.Element {
               <PrivateRoute
                 authorizationStatus={AuthorizationStatus.NoAuth}
               >
-                <FavoritesPage offers={offerPreviews}/>
+                <FavoritesPage />
               </PrivateRoute>
             }
           />
           <Route
             path={`${AppRoute.OfferPage}/:id`}
-            element={<OfferPage offers={offers}/>}
+            element={<OfferPage />}
           />
           <Route
             path={AppRoute.NotFoundPage}

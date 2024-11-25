@@ -4,17 +4,23 @@ import OffersList from '../../components/offers-list/offers-list.tsx';
 import Header from '../../components/header/header';
 import {AppRoute, Cities, SortingOptions} from '../../const.ts';
 import {Link} from 'react-router-dom';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Map from '../../components/map/map.tsx';
+import {useAppSelector} from '../../hooks';
+import CitiesList from '../../components/cities-list/cities-list.tsx';
 
-type MainPageProps = {
-  offersCount: number;
-  offers: OfferPreviews;
-}
+function MainPage(): JSX.Element{
+  const offerPreviews = useAppSelector((state) => state.offerPreviewsList);
+  const [, setCurrentCityOffers] = useState<OfferPreviews>(offerPreviews);
 
-function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
+  const city = useAppSelector((state) => state.city);
+  useEffect(() => {
+    const filteredOffers = offerPreviews.filter((offerPreview) => offerPreview.city.name === city);
+    setCurrentCityOffers(filteredOffers);
+  }, [city, offerPreviews]);
+
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
-  const selectedOffer = offers.find((offer) => offer.id === activeOfferId);
+  const selectedOffer = offerPreviews.find((offer) => offer.id === activeOfferId);
 
   return (
     <div className="page page--gray page--main">
@@ -27,7 +33,7 @@ function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
             <Link className="header__logo-link" to={AppRoute.MainPage}>
               <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41"/>
             </Link>
-            <Header offers={offers}/>
+            <Header offers={offerPreviews}/>
           </div>
         </div>
       </header>
@@ -36,15 +42,7 @@ function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
-            <ul className="locations__list tabs__list">
-              {Cities.map((city) => (
-                <li key={city} className="locations__item">
-                  <a className="locations__item-link tabs__item" href="#">
-                    <span>{city}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <CitiesList cities={Cities}/>
           </section>
         </div>
 
@@ -52,7 +50,7 @@ function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offersCount} places to stay in Amsterdam</b>
+              <b className="places__found">{`${offerPreviews.length} places to stay in ${city}`}</b>
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0}>
@@ -70,14 +68,14 @@ function MainPage({offersCount, offers}: MainPageProps): JSX.Element {
                 </ul>
               </form>
               <OffersList
-                offers={offers}
+                offers={offerPreviews}
                 onActiveOfferChange={setActiveOfferId}
               />
             </section>
             <div className="cities__right-section">
               <Map
-                city={offers[0].city}
-                offers={offers}
+                city={offerPreviews[0].city}
+                offers={offerPreviews}
                 selectedOffer={selectedOffer}
               />
             </div>

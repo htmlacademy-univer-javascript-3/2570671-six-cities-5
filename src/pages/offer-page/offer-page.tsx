@@ -1,5 +1,4 @@
 import {Helmet} from 'react-helmet-async';
-import {Offers} from '../../types/offer.ts';
 import {Link, useParams} from 'react-router-dom';
 import NotFoundPage from '../not-found-page/not-found-page.tsx';
 import {reviews} from '../../mocks/reviews';
@@ -9,13 +8,11 @@ import {AppRoute} from '../../const.ts';
 import Header from '../../components/header/header.tsx';
 import ReviewsList from '../../components/reviews-list/reviews-list.tsx';
 import Map from '../../components/map/map.tsx';
-
-export type OfferPageProps = {
-  offers: Offers;
-};
+import {useAppSelector} from '../../hooks';
 
 
-function OfferPage({offers}: OfferPageProps): JSX.Element {
+function OfferPage(): JSX.Element {
+  const offers = useAppSelector((state) => state.offers);
   const params = useParams();
   const offer = offers.find((item) => item.id === params.id);
   const threeNearbyOffers = offers.filter((otherOffer) => otherOffer.id !== offer?.id).slice(0, 3);
