@@ -1,4 +1,3 @@
-import {OfferPreviews} from '../../types/offer-preview.ts';
 import {Helmet} from 'react-helmet-async';
 import OffersList from '../../components/offers-list/offers-list';
 import Footer from '../../components/footer/footer';
@@ -6,14 +5,12 @@ import Header from '../../components/header/header';
 import {AppRoute} from '../../const.ts';
 import {Link} from 'react-router-dom';
 import {useState} from 'react';
+import {useAppSelector} from '../../hooks';
 
-type FavoritesScreenProps = {
-  offers: OfferPreviews;
-};
-
-function FavoritesPage({offers}: FavoritesScreenProps): JSX.Element {
+function FavoritesPage(): JSX.Element {
   const [, setActiveOfferId] = useState<string | null>(null);
-  const favoriteOffers = offers.filter((offerPreview) => offerPreview.isBookmarked);
+  const offerPreviews = useAppSelector((state) => state.offerPreviewsList);
+  const favoriteOffers = offerPreviews.filter((offerPreview) => offerPreview.isBookmarked);
 
   const handleActiveOfferChange = (offerId: string | null) => {
     setActiveOfferId(offerId);
@@ -32,7 +29,7 @@ function FavoritesPage({offers}: FavoritesScreenProps): JSX.Element {
                 <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41"/>
               </Link>
             </div>
-            <Header offers={offers}/>
+            <Header offers={offerPreviews}/>
           </div>
         </div>
       </header>
