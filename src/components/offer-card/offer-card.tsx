@@ -1,35 +1,33 @@
-import {OfferPreview} from '../../types/offer-preview.ts';
 import {Offer} from '../../types/offer.ts';
 import {Link} from 'react-router-dom';
 import {AppRoute} from '../../const.ts';
 
 type OfferCardProps = {
-  offer: OfferPreview | Offer;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  offer: Offer;
+  onMouseEnter: (id: string) => void;
+  onMouseLeave: (id: string) => void;
 }
 
-function OfferCard({offer, onMouseEnter, onMouseLeave}: OfferCardProps): JSX.Element {
-  let imageSrc = '';
-  if ('previewImage' in offer) {
-    imageSrc = offer.previewImage;
-  } else if (offer.images.length > 0) {
-    imageSrc = offer.images[0];
-  }
+function OfferCard({ offer, onMouseEnter, onMouseLeave }: OfferCardProps) {
+  const isBookmarked = offer.isBookmarked && 'place-card__bookmark-button--active';
+
+  const link = AppRoute.OfferPage.replace(':id', offer.id);
 
   return (
-    <article className="cities__card place-card"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+    <article
+      className="cities__card place-card"
+      onMouseEnter={() => onMouseEnter(offer.id)}
+      onMouseLeave={() => onMouseLeave(offer.id)}
     >
-      {offer.isBookmarked && (
+      {
+        offer.isPremium &&
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
-      )}
+      }
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <Link to={`${AppRoute.OfferPage}/${offer.id}`}>
-          <img className="place-card__image" src={imageSrc} width="260" height="200" alt="Place image"/>
+        <Link to={link} >
+          <img className="place-card__image" src={offer.previewImage} width="260" height="200" alt="Place image" />
         </Link>
       </div>
       <div className="place-card__info">
@@ -39,25 +37,25 @@ function OfferCard({offer, onMouseEnter, onMouseLeave}: OfferCardProps): JSX.Ele
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button button ${offer.isBookmarked ? 'place-card__bookmark-button--active' : ''}`}
+            className={`place-card__bookmark-button ${isBookmarked} button`}
             type="button"
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
-            <span className="visually-hidden">{offer.isBookmarked ? 'In bookmarks' : 'To bookmarks'}</span>
+            <span className="visually-hidden">To bookmarks</span>
           </button>
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{width: `${offer.rating * 20}%`}}></span>
+            <span style={{ width: `${Math.floor(offer.rating) * 20}%` }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.OfferPage}/${offer.id}`}>{offer.title}</Link>
+          <Link to={link}>{offer.title}</Link>
         </h2>
-        <p className="place-card__type">{offer.type[0].toUpperCase() + offer.type.substring(1)}</p>
+        <p className="place-card__type">{offer.type}</p>
       </div>
     </article>
   );

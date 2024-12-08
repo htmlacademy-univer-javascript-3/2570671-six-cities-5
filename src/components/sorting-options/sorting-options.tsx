@@ -8,7 +8,7 @@ function SortingOptions({onSortingChange, currentSortingType}: SortingOptionsPro
     { label: 'Popular', value: 'popular' },
     { label: 'Price: low to high', value: 'lowToHigh' },
     { label: 'Price: high to low', value: 'highToLow' },
-    { label: 'Top rated first', value: 'topRated' },
+    { label: 'Top rated first', value: 'topRatedFirst' },
   ];
 
   return (

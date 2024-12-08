@@ -6,20 +6,12 @@ import OfferPage from '../../pages/offer-page/offer-page.tsx';
 import NotFoundPage from '../../pages/not-found-page/not-found-page.tsx';
 import {AppRoute, AuthorizationStatus} from '../../const.ts';
 import {PrivateRoute} from '../private-route/private-route.tsx';
-import {HelmetProvider} from 'react-helmet-async';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {setOffers, setOffersList, setReviews} from '../../store/action.ts';
+import {Provider} from 'react-redux';
+import {appStateStore} from '../../store';
 
 function App(): JSX.Element {
-  const offerPreviews = useAppSelector((state) => state.offerPreviewsList);
-  const reviews = useAppSelector((state) => state.reviews);
-  const offers = useAppSelector((state) => state.offers);
-  const dispatch = useAppDispatch();
-  dispatch(setOffersList(offerPreviews));
-  dispatch(setReviews(reviews));
-  dispatch(setOffers(offers));
   return (
-    <HelmetProvider>
+    <Provider store={appStateStore}>
       <BrowserRouter>
         <Routes>
           <Route
@@ -36,12 +28,14 @@ function App(): JSX.Element {
               <PrivateRoute
                 authorizationStatus={AuthorizationStatus.NoAuth}
               >
-                <FavoritesPage />
+                <FavoritesPage
+                  offers = {[]}
+                />
               </PrivateRoute>
             }
           />
           <Route
-            path={`${AppRoute.OfferPage}/:id`}
+            path={`${AppRoute.OfferPage}`}
             element={<OfferPage />}
           />
           <Route
@@ -50,7 +44,7 @@ function App(): JSX.Element {
           />
         </Routes>
       </BrowserRouter>
-    </HelmetProvider>
+    </Provider>
   );
 }
 

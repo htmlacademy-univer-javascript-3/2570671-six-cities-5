@@ -2,9 +2,9 @@ import {User} from './user';
 
 export type Review = {
   id: string;
-  date: string;
-  user: User;
   comment: string;
+  user: User;
+  timestamp: string;
   rating: number;
 };
 
