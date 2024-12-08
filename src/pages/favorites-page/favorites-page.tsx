@@ -4,18 +4,13 @@ import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
 import {AppRoute} from '../../const.ts';
 import {Link} from 'react-router-dom';
-import {useState} from 'react';
-import {useAppSelector} from '../../hooks';
+import {Offers} from '../../types/offer.ts';
 
-function FavoritesPage(): JSX.Element {
-  const [, setActiveOfferId] = useState<string | null>(null);
-  const offerPreviews = useAppSelector((state) => state.offerPreviewsList);
-  const favoriteOffers = offerPreviews.filter((offerPreview) => offerPreview.isBookmarked);
+type FavoritesPageProps = {
+  offers: Offers;
+}
 
-  const handleActiveOfferChange = (offerId: string | null) => {
-    setActiveOfferId(offerId);
-  };
-
+function FavoritesPage({offers}: FavoritesPageProps): JSX.Element {
   return (
     <div className="page">
       <Helmet>
@@ -29,7 +24,7 @@ function FavoritesPage(): JSX.Element {
                 <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41"/>
               </Link>
             </div>
-            <Header offers={offerPreviews}/>
+            <Header offers={offers}/>
           </div>
         </div>
       </header>
@@ -39,8 +34,8 @@ function FavoritesPage(): JSX.Element {
           <section className="favorites">
             <h1 className="favorites__title">Saved listing</h1>
             <OffersList
-              offers={favoriteOffers}
-              onActiveOfferChange={handleActiveOfferChange}
+              offers={offers.filter((offer) => offer.isBookmarked)}
+              className='favorites__places'
             />
           </section>
         </div>

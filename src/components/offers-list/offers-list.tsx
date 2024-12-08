@@ -1,36 +1,22 @@
-import {OfferPreviews} from '../../types/offer-preview.ts';
-import {useEffect, useState} from 'react';
 import OfferCard from '../offer-card/offer-card.tsx';
 import {Offers} from '../../types/offer';
 
 type OffersListProps = {
-  offers: OfferPreviews | Offers;
-  onActiveOfferChange: (offerId: string | null) => void;
+  offers: Offers;
+  className: string;
+  onMouseEnter?: (id: string) => void;
+  onMouseLeave?: (id: string) => void;
 }
 
-function OffersList({offers, onActiveOfferChange}: OffersListProps): JSX.Element {
-  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
-
-  useEffect(() => {
-    onActiveOfferChange(activeOfferId);
-  }, [activeOfferId, onActiveOfferChange]);
-
-  const handleMouseEnter = (offerId: string) => {
-    setActiveOfferId(offerId);
-  };
-
-  const handleMouseLeave = () => {
-    setActiveOfferId(null);
-  };
-
+function OffersList({offers, className, onMouseEnter, onMouseLeave}: OffersListProps): JSX.Element {
   return (
-    <div className="cities__places-list places__list tabs__content">
+    <div className={className}>
       {offers.map((offer) => (
         <OfferCard
           key={offer.id}
           offer={offer}
-          onMouseEnter={() => handleMouseEnter(offer.id)}
-          onMouseLeave={handleMouseLeave}
+          onMouseEnter={(id) => onMouseEnter?.(id)}
+          onMouseLeave={(id) => onMouseLeave?.(id)}
         />))}
     </div>
   );

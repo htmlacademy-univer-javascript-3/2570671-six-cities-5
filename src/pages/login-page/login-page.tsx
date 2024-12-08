@@ -33,7 +33,7 @@ function LoginPage(): JSX.Element {
                   name="email"
                   id="email"
                   placeholder="Email"
-                  required
+                  required={false}
                 />
               </div>
               <div className="login__input-wrapper form__input-wrapper">
@@ -44,7 +44,7 @@ function LoginPage(): JSX.Element {
                   name="password"
                   id="password"
                   placeholder="Password"
-                  required
+                  required={false}
                 />
               </div>
               <button className="login__submit form__submit button" type="submit">Sign in</button>

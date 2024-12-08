@@ -1,59 +1,53 @@
 import {City} from '../../types/city.ts';
-import {Icon, layerGroup, Marker} from 'leaflet';
 import {URL_MARKER_CURRENT, URL_MARKER_DEFAULT} from '../../const.ts';
 import {useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map.tsx';
-import {OfferPreview, OfferPreviews} from '../../types/offer-preview.ts';
 import {Offers} from '../../types/offer.ts';
+import leaflet from 'leaflet';
 
 type MapProps = {
   city: City;
-  offers: OfferPreviews | Offers;
-  selectedOffer: OfferPreview | undefined;
+  offers: Offers;
+  activeOfferId: string | null;
+  className: string;
 };
 
-const defaultCustomIcon = new Icon({
+const defaultCustomIcon = leaflet.icon({
   iconUrl: URL_MARKER_DEFAULT,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
 
-const currentCustomIcon = new Icon({
+const currentCustomIcon = leaflet.icon({
   iconUrl: URL_MARKER_CURRENT,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
 
-function Map(props: MapProps): JSX.Element {
-  const { city, offers, selectedOffer } = props;
+function Map({city, offers, activeOfferId, className} : MapProps): JSX.Element {
 
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
   useEffect(() => {
-    if (map && offers.length > 0) {
-      const markerLayer = layerGroup().addTo(map);
+    if (map) {
       offers.forEach((offer) => {
-        const marker = new Marker({
-          lat: offer.location.latitude,
-          lng: offer.location.longitude,
-        }).setIcon(
-          selectedOffer !== undefined && offer.id === selectedOffer.id
-            ? currentCustomIcon
-            : defaultCustomIcon
-        );
-        marker.addTo(markerLayer);
+        leaflet
+          .marker({
+            lat: offer.location.latitude,
+            lng: offer.location.longitude
+          }, {
+            icon: offer.id === activeOfferId ? currentCustomIcon : defaultCustomIcon,
+          }).addTo(map);
+
       });
-      return () => {
-        map.removeLayer(markerLayer);
-      };
+
     }
-  }, [map, offers, selectedOffer]);
+  }, [map, offers, city, activeOfferId, currentCustomIcon, defaultCustomIcon]);
 
   return (
     <div
-      className="cities__map map"
-      style={{ height: '500px' }}
+      className={className}
       ref={mapRef}
     />
   );

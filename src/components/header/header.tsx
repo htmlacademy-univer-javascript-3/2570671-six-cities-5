@@ -1,10 +1,9 @@
 import {Link} from 'react-router-dom';
 import {AppRoute} from '../../const.ts';
-import {OfferPreviews} from '../../types/offer-preview.ts';
 import {Offers} from '../../types/offer.ts';
 
 export type HeaderProps = {
-  offers: OfferPreviews | Offers;
+  offers: Offers;
 };
 
 function Header({offers}: HeaderProps): JSX.Element {
