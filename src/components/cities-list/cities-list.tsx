@@ -1,5 +1,6 @@
 import {useAppDispatch} from '../../hooks';
-import {changeCity} from '../../store/action.ts';
+import {selectCity} from '../../store/action.ts';
+import {memo, useCallback} from 'react';
 
 type CitiesListProps = {
   cities: {
@@ -11,10 +12,12 @@ type CitiesListProps = {
 function CitiesList({cities}: CitiesListProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const handleCityChange = (city: string) => {
-    dispatch(changeCity(city));
-  };
-
+  const handleCityChange = useCallback(
+    (city: string) => {
+      dispatch(selectCity(city));
+    },
+    [dispatch]
+  );
   return (
     <ul className="locations__list tabs__list">
       {cities.map((city) => (
@@ -32,4 +35,5 @@ function CitiesList({cities}: CitiesListProps): JSX.Element {
   );
 }
 
-export default CitiesList;
+const MemoizedCitiesList = memo(CitiesList);
+export default MemoizedCitiesList;

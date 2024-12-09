@@ -1,4 +1,4 @@
-import {ChangeEvent} from 'react';
+import {ChangeEvent, memo} from 'react';
 import {useState} from 'react';
 
 function ReviewSendingForm(): JSX.Element {
@@ -130,4 +130,5 @@ function ReviewSendingForm(): JSX.Element {
   );
 }
 
-export default ReviewSendingForm;
+const MemoizedReviewSendingForm = memo(ReviewSendingForm);
+export default MemoizedReviewSendingForm;

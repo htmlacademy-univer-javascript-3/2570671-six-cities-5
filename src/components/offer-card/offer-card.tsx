@@ -1,6 +1,7 @@
 import {Offer} from '../../types/offer.ts';
 import {Link} from 'react-router-dom';
 import {AppRoute} from '../../const.ts';
+import {memo, useMemo} from 'react';
 
 type OfferCardProps = {
   offer: Offer;
@@ -9,7 +10,7 @@ type OfferCardProps = {
 }
 
 function OfferCard({ offer, onMouseEnter, onMouseLeave }: OfferCardProps) {
-  const isBookmarked = offer.isBookmarked && 'place-card__bookmark-button--active';
+  const isBookmarked = useMemo(() => offer.isBookmarked ? 'place-card__bookmark-button--active' : '', [offer.isBookmarked]);
 
   const link = AppRoute.OfferPage.replace(':id', offer.id);
 
@@ -61,4 +62,5 @@ function OfferCard({ offer, onMouseEnter, onMouseLeave }: OfferCardProps) {
   );
 }
 
-export default OfferCard;
+const MemoizedOfferCard = memo(OfferCard);
+export default MemoizedOfferCard;

@@ -1,23 +1,23 @@
-import OffersList from '../../components/offers-list/offers-list';
 import Footer from '../../components/footer/footer';
-import Header from '../../components/header/header';
-import {Offers} from '../../types/offer.ts';
+import MemoizedOfferList from '../../components/offers-list/offers-list';
+import MemoizedHeader from '../../components/header/header';
+import {memo, useMemo} from 'react';
+import {useAppSelector} from '../../hooks';
 
-type FavoritesPageProps = {
-  offers: Offers;
-}
+function FavoritesPage(): JSX.Element {
+  const offers = useAppSelector((state) => state.offers);
+  const favoriteOffers = useMemo(() => offers.filter((offer) => offer.isBookmarked), [offers]);
 
-function FavoritesPage({offers}: FavoritesPageProps): JSX.Element {
   return (
     <div className="page">
-      <Header />
+      <MemoizedHeader />
 
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
           <section className="favorites">
             <h1 className="favorites__title">Saved listing</h1>
-            <OffersList
-              offers={offers.filter((offer) => offer.isBookmarked)}
+            <MemoizedOfferList
+              offers={favoriteOffers}
               className='favorites__places'
             />
           </section>
@@ -28,4 +28,5 @@ function FavoritesPage({offers}: FavoritesPageProps): JSX.Element {
   );
 }
 
-export default FavoritesPage;
+const MemoizedFavoritesPage = memo(FavoritesPage);
+export default MemoizedFavoritesPage;

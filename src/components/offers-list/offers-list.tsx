@@ -1,5 +1,6 @@
-import OfferCard from '../offer-card/offer-card.tsx';
 import {Offers} from '../../types/offer';
+import MemoizedOfferCard from '../offer-card/offer-card.tsx';
+import {memo} from 'react';
 
 type OffersListProps = {
   offers: Offers;
@@ -12,7 +13,7 @@ function OffersList({offers, className, onMouseEnter, onMouseLeave}: OffersListP
   return (
     <div className={className}>
       {offers.map((offer) => (
-        <OfferCard
+        <MemoizedOfferCard
           key={offer.id}
           offer={offer}
           onMouseEnter={(id) => onMouseEnter?.(id)}
@@ -22,4 +23,5 @@ function OffersList({offers, className, onMouseEnter, onMouseLeave}: OffersListP
   );
 }
 
-export default OffersList;
+const MemoizedOfferList = memo(OffersList);
+export default MemoizedOfferList;
