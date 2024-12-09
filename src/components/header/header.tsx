@@ -3,6 +3,7 @@ import {AppRoute, AuthorizationStatus} from '../../const.ts';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {logoutAction} from '../../store/api-actions.ts';
 import {memo, useCallback} from 'react';
+import React from 'react';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ function Header(): JSX.Element {
           <nav className="header__nav">
             <ul className="header__nav-list">
               {authorizationStatus === AuthorizationStatus.Auth ? (
-                <>
+                <React.Fragment>
                   <li className="header__nav-item user">
                     <Link className="header__nav-link header__nav-link--profile" to={AppRoute.FavoritesPage}>
                       <div className="header__avatar-wrapper user__avatar-wrapper">
@@ -40,7 +41,7 @@ function Header(): JSX.Element {
                       <span className="header__signout">Sign out</span>
                     </a>
                   </li>
-                </>
+                </React.Fragment>
               ) : (
                 <li className="header__nav-item user">
                   <Link className="header__nav-link header__nav-link--profile" to={AppRoute.LoginPage}>
