@@ -8,10 +8,10 @@ import {useEffect} from 'react';
 import {fetchOfferDetailsAction} from '../../store/api-actions.ts';
 import LoadingPage from '../loading-page/loading-page.tsx';
 import NotFoundPage from '../not-found-page/not-found-page.tsx';
-import {NavigationBar} from '../../components/navigation-bar/navigation-bar.tsx';
 import ReviewsList from '../../components/reviews-list/reviews-list.tsx';
 import OffersList from '../../components/offers-list/offers-list.tsx';
 import Map from '../../components/map/map.tsx';
+import Header from '../../components/header/header.tsx';
 
 
 function OfferPage() {
@@ -37,10 +37,9 @@ function OfferPage() {
     return <NotFoundPage />;
   }
 
-  // @ts-ignore
   return (
     <div className="page">
-      <NavigationBar isActive />
+      <Header />
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">

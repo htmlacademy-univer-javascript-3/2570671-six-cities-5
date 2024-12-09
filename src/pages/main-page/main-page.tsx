@@ -6,10 +6,10 @@ import {Offers} from '../../types/offer.ts';
 import {AppState} from '../../store/reducer.ts';
 import {AppDispatch} from '../../store';
 import {selectCity, selectSort} from '../../store/action.ts';
-import {NavigationBar} from '../../components/navigation-bar/navigation-bar.tsx';
 import {SortOptions} from '../../components/sort-options/sort-options.tsx';
 import OffersList from '../../components/offers-list/offers-list.tsx';
 import LoadingPage from '../loading-page/loading-page.tsx';
+import Header from '../../components/header/header.tsx';
 
 function MainPage() {
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
@@ -57,7 +57,7 @@ function MainPage() {
 
   return (
     <div className="page page--gray page--main">
-      <NavigationBar isActive={false} />
+      <Header />
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">

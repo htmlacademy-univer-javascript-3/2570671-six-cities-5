@@ -55,4 +55,8 @@ export enum APIRoute {
   OfferDetails = '/offers/:id',
   OfferReviews = '/comments/:id',
   OffersNearby = '/offers/:id/nearby',
+  Login = '/login',
+  Logout = '/logout',
 }
+
+export const AUTH_TOKEN_KEY_NAME = 'six-cities-token';

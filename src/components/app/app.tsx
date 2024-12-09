@@ -1,18 +1,20 @@
 import MainPage from '../../pages/main-page/main-page';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import LoginPage from '../../pages/login-page/login-page.tsx';
 import FavoritesPage from '../../pages/favorites-page/favorites-page.tsx';
 import OfferPage from '../../pages/offer-page/offer-page.tsx';
 import NotFoundPage from '../../pages/not-found-page/not-found-page.tsx';
-import {AppRoute, AuthorizationStatus} from '../../const.ts';
+import {AppRoute} from '../../const.ts';
 import {PrivateRoute} from '../private-route/private-route.tsx';
 import {Provider} from 'react-redux';
-import {appStateStore} from '../../store';
+import {store} from '../../store';
+import HistoryRouter from '../history-router/history-route.tsx';
+import browserHistory from '../../browser-history.ts';
 
 function App(): JSX.Element {
   return (
-    <Provider store={appStateStore}>
-      <BrowserRouter>
+    <Provider store={store}>
+      <HistoryRouter history={browserHistory}>
         <Routes>
           <Route
             path={AppRoute.MainPage}
@@ -25,9 +27,7 @@ function App(): JSX.Element {
           <Route
             path={AppRoute.FavoritesPage}
             element={
-              <PrivateRoute
-                authorizationStatus={AuthorizationStatus.NoAuth}
-              >
+              <PrivateRoute>
                 <FavoritesPage
                   offers = {[]}
                 />
@@ -43,7 +43,7 @@ function App(): JSX.Element {
             element={<NotFoundPage />}
           />
         </Routes>
-      </BrowserRouter>
+      </HistoryRouter>
     </Provider>
   );
 }
