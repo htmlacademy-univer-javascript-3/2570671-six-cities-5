@@ -1,5 +1,4 @@
-import {useState} from 'react';
-import Map from '../../components/map/map.tsx';
+import {memo, useCallback, useMemo, useState} from 'react';
 import {SortType} from '../../types/sort.ts';
 import {useDispatch, useSelector} from 'react-redux';
 import {Offers} from '../../types/offer.ts';
@@ -7,43 +6,42 @@ import {AppState} from '../../store/reducer.ts';
 import {AppDispatch} from '../../store';
 import {selectCity, selectSort} from '../../store/action.ts';
 import {SortOptions} from '../../components/sort-options/sort-options.tsx';
-import OffersList from '../../components/offers-list/offers-list.tsx';
-import LoadingPage from '../loading-page/loading-page.tsx';
-import Header from '../../components/header/header.tsx';
+import MemoizedHeader from '../../components/header/header.tsx';
+import MemoizedOfferList from '../../components/offers-list/offers-list.tsx';
+import MemoizedMap from '../../components/map/map.tsx';
+import MemoizedLoadingPage from '../loading-page/loading-page.tsx';
 
 function MainPage() {
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
-  function onMouseEnter(id: string) {
-    setActiveOfferId(id);
-  }
+  const onMouseEnter = useCallback((id: string) => setActiveOfferId(id), []);
 
-  function onMouseLeave(id: string) {
+  const onMouseLeave = useCallback((id: string) => {
     if (activeOfferId === id) {
       setActiveOfferId(null);
     }
-  }
+  }, [activeOfferId]);
 
-  const chosenCity = useSelector<AppState, string>((state) => state.selectedCity);
-  const chosenSort = useSelector<AppState, SortType>((state) => state.sortType);
+  const selectedCity = useSelector<AppState, string>((state) => state.selectedCity);
+  const selectedSort = useSelector<AppState, SortType>((state) => state.sortType);
   const offers = useSelector<AppState, Offers>((state) => state.offers);
   const cities = useSelector<AppState, string[]>((state) => state.cities);
 
-  const chosenOffers = offers
-    .filter((offer) => offer.city.name === chosenCity)
-    .sort(
-      (left, right) => {
-        if (chosenSort === SortType.PriceHighToLow) {
-          return right.price - left.price;
-        } else if (chosenSort === SortType.PriceLowToHigh) {
-          return left.price - right.price;
-        } else if (chosenSort === SortType.TopRatedFirst) {
-          return right.rating - left.rating;
-        }
-
-        return 0;
+  const selectedOffers = useMemo(() => {
+    const filteredOffers = offers.filter((offer) => offer.city.name === selectedCity);
+    return [...filteredOffers].sort((a, b) => {
+      switch (selectedSort) {
+        case SortType.PriceLowToHigh:
+          return a.price - b.price;
+        case SortType.PriceHighToLow:
+          return b.price - a.price;
+        case SortType.TopRatedFirst:
+          return b.rating - a.rating;
+        default:
+          return 0;
       }
-    );
+    });
+  }, [selectedCity, offers, selectedSort]);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -57,7 +55,7 @@ function MainPage() {
 
   return (
     <div className="page page--gray page--main">
-      <Header />
+      <MemoizedHeader />
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
@@ -71,7 +69,7 @@ function MainPage() {
                       className="locations__item"
                       onClick={() => handleCityChoose(item)}
                     >
-                      <a className={`locations__item-link tabs__item ${item === chosenCity && 'tabs__item--active'}`}
+                      <a className={`locations__item-link tabs__item ${item === selectedCity && 'tabs__item--active'}`}
                         href="#"
                       >
                         <span>{item}</span>
@@ -83,19 +81,19 @@ function MainPage() {
           </section>
         </div>
         {
-          chosenOffers.length !== 0
+          selectedOffers.length !== 0
             ?
             <div className="cities">
               <div className="cities__places-container container">
                 <section className="cities__places places">
                   <h2 className="visually-hidden">Places</h2>
-                  <b className="places__found">{chosenOffers.length} places to stay in {chosenCity}</b>
+                  <b className="places__found">{selectedOffers.length} places to stay in {selectedCity}</b>
                   <SortOptions
-                    sortType={chosenSort}
+                    sortType={selectedSort}
                     handleSortingChoose={handleSortingChoose}
                   />
-                  <OffersList
-                    offers={chosenOffers}
+                  <MemoizedOfferList
+                    offers={selectedOffers}
                     className={'cities__places-list places__list tabs__content'}
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
@@ -103,20 +101,21 @@ function MainPage() {
                 </section>
 
                 <div className="cities__right-section">
-                  <Map
-                    city={chosenOffers[0].city}
-                    offers={chosenOffers}
+                  <MemoizedMap
+                    city={selectedOffers[0].city}
+                    offers={selectedOffers}
                     activeOfferId={activeOfferId}
                     className="cities__map map"
                   />
                 </div>
               </div>
             </div>
-            : <LoadingPage />
+            : <MemoizedLoadingPage />
         }
       </main>
     </div>
   );
 }
 
-export default MainPage;
+const MemoizedMainPage = memo(MainPage);
+export default MemoizedMainPage;

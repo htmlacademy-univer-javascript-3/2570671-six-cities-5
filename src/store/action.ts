@@ -2,7 +2,7 @@ import {createAction} from '@reduxjs/toolkit';
 import {Offers} from '../types/offer.ts';
 import {SortType} from '../types/sort.ts';
 import {OfferDetails} from '../types/offer-details.ts';
-import {AppRoute, AuthorizationStatus} from '../const.ts';
+import {AuthorizationStatus} from '../const.ts';
 
 export const selectCity = createAction<string>('chooseCity');
 
@@ -15,6 +15,4 @@ export const setSelectedOffer = createAction<OfferDetails | undefined>('setSelec
 export const setSelectedOfferLoadingStatus = createAction<boolean>('setSelectedOfferLoadingStatus');
 
 export const requireAuthorization = createAction<AuthorizationStatus>('user/requireAuthorization');
-export const redirectToRoute = createAction<AppRoute>('engine/redirectToRoute');
-
 export const setUserEmail = createAction<string>('setUserEmail');

@@ -1,6 +1,6 @@
 import {City} from '../../types/city.ts';
 import {URL_MARKER_CURRENT, URL_MARKER_DEFAULT} from '../../const.ts';
-import {useEffect, useRef} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map.tsx';
 import {Offers} from '../../types/offer.ts';
 import leaflet from 'leaflet';
@@ -43,7 +43,7 @@ function Map({city, offers, activeOfferId, className} : MapProps): JSX.Element {
       });
 
     }
-  }, [map, offers, city, activeOfferId, currentCustomIcon, defaultCustomIcon]);
+  }, [map, offers, city, activeOfferId]);
 
   return (
     <div
@@ -53,4 +53,8 @@ function Map({city, offers, activeOfferId, className} : MapProps): JSX.Element {
   );
 }
 
-export default Map;
+const MemoizedMap = memo(Map, (prevProps, nextProps) =>
+  prevProps.activeOfferId === nextProps.activeOfferId &&
+  prevProps.offers.map((offer) => offer.id).join() === nextProps.offers.map((offer) => offer.id).join()
+);
+export default MemoizedMap;

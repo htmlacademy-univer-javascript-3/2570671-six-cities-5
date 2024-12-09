@@ -1,3 +1,5 @@
+import {memo} from 'react';
+
 function LoadingPage() {
   return (
     <div style={
@@ -15,4 +17,5 @@ function LoadingPage() {
     </div>
   );
 }
-export default LoadingPage;
+const MemoizedLoadingPage = memo(LoadingPage);
+export default MemoizedLoadingPage;

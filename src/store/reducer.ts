@@ -9,7 +9,7 @@ import {
   setOffers,
   setOffersLoadingStatus,
   setSelectedOffer,
-  setSelectedOfferLoadingStatus
+  setSelectedOfferLoadingStatus, setUserEmail
 } from './action.ts';
 import {AuthorizationStatus} from '../const.ts';
 
@@ -66,5 +66,8 @@ export const reducer = createReducer<AppState>(initialState, (builder) => {
     })
     .addCase(requireAuthorization, (state, action) => {
       state.authorizationStatus = action.payload;
+    })
+    .addCase(setUserEmail, (state, { payload }) => {
+      state.userEmail = payload;
     });
 });

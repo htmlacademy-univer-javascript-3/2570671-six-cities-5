@@ -1,6 +1,7 @@
 import {Reviews} from '../../types/review.ts';
-import ReviewItem from '../review-item/review-item.tsx';
-import ReviewSendingForm from '../review-sending-form/review-sending-form.tsx';
+import MemoizedReviewItem from '../review-item/review-item.tsx';
+import MemoizedReviewSendingForm from '../review-sending-form/review-sending-form.tsx';
+import {memo} from 'react';
 
 type ReviewsListProps = {
   reviews: Reviews;
@@ -14,18 +15,19 @@ function ReviewsList({reviews}: ReviewsListProps): JSX.Element {
         {
           reviews
             .map((review) => (
-              <ReviewItem
+              <MemoizedReviewItem
                 key={review.id}
                 review={review}
               />)
             )
         }
       </ul>
-      <ReviewSendingForm />
+      <MemoizedReviewSendingForm />
     </section>
   );
 }
 
-export default ReviewsList;
+const MemoizedReviewsList = memo(ReviewsList);
+export default MemoizedReviewsList;
 
 

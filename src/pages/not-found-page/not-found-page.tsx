@@ -1,6 +1,7 @@
 import {Link} from 'react-router-dom';
 import './not-found-page.css';
 import {AppRoute} from '../../const.ts';
+import {memo} from "react";
 
 function NotFoundPage(): JSX.Element {
   return (
@@ -14,4 +15,5 @@ function NotFoundPage(): JSX.Element {
   );
 }
 
-export default NotFoundPage;
+const MemoizedNotFoundPage = memo(NotFoundPage);
+export default MemoizedNotFoundPage;
