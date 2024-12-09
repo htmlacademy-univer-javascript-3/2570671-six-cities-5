@@ -3,6 +3,7 @@ import {SortType} from '../types/sort.ts';
 import {OfferDetails} from '../types/offer-details.ts';
 import {createReducer} from '@reduxjs/toolkit';
 import {
+  requireAuthorization,
   selectCity,
   selectSort,
   setOffers,
@@ -10,6 +11,7 @@ import {
   setSelectedOffer,
   setSelectedOfferLoadingStatus
 } from './action.ts';
+import {AuthorizationStatus} from '../const.ts';
 
 export type AppState = {
   offers: Offers;
@@ -19,6 +21,8 @@ export type AppState = {
   selectedOffer?: OfferDetails;
   isOffersLoading: boolean;
   isSelectedOfferLoading: boolean;
+  authorizationStatus: AuthorizationStatus;
+  userEmail: string;
 }
 
 const initialState: AppState = {
@@ -36,6 +40,8 @@ const initialState: AppState = {
   selectedOffer: undefined,
   isOffersLoading: false,
   isSelectedOfferLoading: false,
+  authorizationStatus: AuthorizationStatus.Unknown,
+  userEmail: '',
 };
 
 export const reducer = createReducer<AppState>(initialState, (builder) => {
@@ -57,5 +63,8 @@ export const reducer = createReducer<AppState>(initialState, (builder) => {
     })
     .addCase(setSelectedOfferLoadingStatus, (state, action) => {
       state.isSelectedOfferLoading = action.payload;
+    })
+    .addCase(requireAuthorization, (state, action) => {
+      state.authorizationStatus = action.payload;
     });
 });

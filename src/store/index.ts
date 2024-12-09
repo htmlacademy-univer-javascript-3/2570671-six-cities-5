@@ -2,10 +2,11 @@ import {reducer} from './reducer.ts';
 import {configureStore} from '@reduxjs/toolkit';
 import {fetchOffersAction} from './api-actions.ts';
 import {createAPI} from '../api/api.ts';
+import {redirect} from './middlewares/redirect.ts';
 
 export const api = createAPI();
 
-export const appStateStore = configureStore(
+export const store = configureStore(
   {
     reducer,
     middleware: (getDefaultMiddleware) =>
@@ -13,10 +14,9 @@ export const appStateStore = configureStore(
         thunk: {
           extraArgument: api,
         },
-      }),
-  },
-);
+      }).concat(redirect),
+  });
 
-appStateStore.dispatch(fetchOffersAction());
+store.dispatch(fetchOffersAction());
 
-export type AppDispatch = typeof appStateStore.dispatch;
+export type AppDispatch = typeof store.dispatch;
