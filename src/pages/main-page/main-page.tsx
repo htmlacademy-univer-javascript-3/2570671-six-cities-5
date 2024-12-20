@@ -9,10 +9,11 @@ import SortOptions from '../../components/sort-options/sort-options.tsx';
 import MemoizedHeader from '../../components/header/header.tsx';
 import MemoizedOfferList from '../../components/offers-list/offers-list.tsx';
 import MemoizedMap from '../../components/map/map.tsx';
-import MemoizedLoadingPage from '../loading-page/loading-page.tsx';
 import {useNavigate} from 'react-router-dom';
 import {BookmarkAction} from '../../types/bookmark-action.ts';
 import {AppRoute, AuthorizationStatus} from '../../const.ts';
+import MemoizedMainEmptyPage from './main-empty-page.tsx';
+import MemoizedLoadingPage from '../loading-page/loading-page.tsx';
 
 type MainPageProps = {
   onBookmarkStatusChange: (action: BookmarkAction) => void;
@@ -35,6 +36,7 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
   const cities = useSelector<AppState, string[]>((state) => state.cities);
   const navigate = useNavigate();
   const authorizationStatus = useSelector<AppState, AuthorizationStatus>((state) => state.authorizationStatus);
+  const isOffersLoading = useSelector<AppState, boolean>((state) => state.isOffersLoading);
 
   const chosenOffers = useMemo(() => {
     const filteredOffers = offers.filter((offer) => offer.city.name === chosenCity);
@@ -79,6 +81,10 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
     [authorizationStatus, navigate, onBookmarkStatusChange]
   );
 
+  if (isOffersLoading) {
+    return (<MemoizedLoadingPage />);
+  }
+
   return (
     <div className="page page--gray page--main">
       <MemoizedHeader />
@@ -107,7 +113,7 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
           </section>
         </div>
         {
-          chosenOffers.length !== 0
+          chosenOffers.length > 0
             ?
             <div className="cities">
               <div className="cities__places-container container">
@@ -136,7 +142,7 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
                 </div>
               </div>
             </div>
-            : <MemoizedLoadingPage />
+            : <MemoizedMainEmptyPage />
         }
       </main>
     </div>

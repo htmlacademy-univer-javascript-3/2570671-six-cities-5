@@ -5,7 +5,7 @@ import {Review} from '../../types/review.ts';
 import {Offer} from '../../types/offer.ts';
 import {AppDispatch} from '../../store';
 import {memo, useCallback, useEffect} from 'react';
-import {fetchOfferAdditionalInformationAction} from '../../store/api-actions.ts';
+import {fetchOfferAndAdditionalInformationAction} from '../../store/api-actions.ts';
 import MemoizedLoadingPage from '../loading-page/loading-page.tsx';
 import MemoizedNotFoundPage from '../not-found-page/not-found-page.tsx';
 import MemoizedHeader from '../../components/header/header.tsx';
@@ -32,7 +32,7 @@ function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
 
   useEffect(() => {
     if (id !== undefined) {
-      dispatch(fetchOfferAdditionalInformationAction(id));
+      dispatch(fetchOfferAndAdditionalInformationAction(id));
     }
   }, [dispatch, id]);
 

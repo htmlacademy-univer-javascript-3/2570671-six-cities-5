@@ -1,6 +1,6 @@
 import {Offers} from '../types/offer.ts';
 import {SortType} from '../types/sort.ts';
-import {OfferAdditionalInformation} from '../types/offer-additional-information.ts';
+import {OfferAndAdditionalInformation} from '../types/offer-and-additional-information.ts';
 import {createReducer} from '@reduxjs/toolkit';
 import {
   requireAuthorization,
@@ -15,7 +15,7 @@ import {
   updateComment,
   updateRating,
   clearFavoriteOffers,
-  addReview, loadOfferAdditionalInformation, setReviewSendingStatus
+  addReview, loadOfferAndAdditionalInformation, setReviewSendingStatus
 } from './action.ts';
 import {AuthorizationStatus} from '../const.ts';
 import {User} from '../types/user.ts';
@@ -26,7 +26,7 @@ export type AppState = {
   cities: string[];
   chosenCity: string;
   sortType: SortType;
-  chosenOffer?: OfferAdditionalInformation;
+  chosenOffer?: OfferAndAdditionalInformation;
   isOffersLoading: boolean;
   isChosenOfferLoading: boolean;
   authorizationStatus: AuthorizationStatus;
@@ -85,7 +85,7 @@ export const reducer = createReducer<AppState>(initialState, (builder) => {
         state.chosenOffer.offer.isFavorite = false;
       }
     })
-    .addCase(loadOfferAdditionalInformation, (state, {payload}) => {
+    .addCase(loadOfferAndAdditionalInformation, (state, {payload}) => {
       state.offers = state.offers.map((offer) =>
         offer.id === payload.id ? payload : offer,
       );

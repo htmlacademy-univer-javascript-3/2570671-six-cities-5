@@ -11,12 +11,12 @@ import {
   loadFavoriteOffers,
   setReviewSendingStatus,
   addReview,
-  updateComment, clearFavoriteOffers, loadOfferAdditionalInformation
+  updateComment, clearFavoriteOffers, loadOfferAndAdditionalInformation
 } from './action.ts';
 import {Offer, Offers} from '../types/offer.ts';
 import {APIRoute, AuthorizationStatus} from '../const.ts';
 import {Review, Reviews} from '../types/review.ts';
-import {OfferAdditionalInformation} from '../types/offer-additional-information.ts';
+import {OfferAndAdditionalInformation} from '../types/offer-and-additional-information.ts';
 import {AppState} from './reducer.ts';
 import {User} from '../types/user.ts';
 import {dropToken, saveToken} from '../services/token.ts';
@@ -43,7 +43,7 @@ export const fetchOffersAction = createAsyncThunk<void, undefined, {
   },
 );
 
-export const fetchOfferAdditionalInformationAction = createAsyncThunk<void, string, {
+export const fetchOfferAndAdditionalInformationAction = createAsyncThunk<void, string, {
   dispatch: AppDispatch;
   state: AppState;
   extra: AxiosInstance;
@@ -57,7 +57,7 @@ export const fetchOfferAdditionalInformationAction = createAsyncThunk<void, stri
       const reviews = await api.get<Reviews>(APIRoute.OfferReviews.replace(':id', offerId));
       const offersNearby = await api.get<Offers>(APIRoute.OffersNearby.replace(':id', offerId));
 
-      const offerDetails: OfferAdditionalInformation = {
+      const offerDetails: OfferAndAdditionalInformation = {
         offer: offer.data,
         reviews: reviews.data.sort((a: Review, b: Review) => (new Date(b.date).getTime() - new Date(a.date).getTime())),
         offersNearby: offersNearby.data,
@@ -96,7 +96,7 @@ export const changeBookmarkStatusAction = createAsyncThunk<void, BookmarkAction,
       .replace(':id', offerId)
       .replace(':status', numberStatus.toString());
     const {data} = await api.post<Offer>(route);
-    dispatch(loadOfferAdditionalInformation(data));
+    dispatch(loadOfferAndAdditionalInformation(data));
   }
 );
 
