@@ -126,7 +126,6 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
                     onMouseLeave={onMouseLeave}
                   />
                 </section>
-
                 <div className="cities__right-section">
                   <MemoizedMap
                     city={chosenOffers[0].city}

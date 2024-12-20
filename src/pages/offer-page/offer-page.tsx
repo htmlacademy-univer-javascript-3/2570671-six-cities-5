@@ -81,7 +81,9 @@ function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
                 <h1 className="offer__name">
                   {offer.title}
                 </h1>
-                <button className={`offer__bookmark-button ${offer.isFavorite && 'offer__bookmark-button--active'} button`} type="button"
+                <button
+                  className={`offer__bookmark-button ${offer.isFavorite && 'offer__bookmark-button--active'} button`}
+                  type="button"
                   onClick={() => handleBookmarkChange({offerId: offer.id, isBookmarked: !offer?.isFavorite})}
                 >
                   <svg className="offer__bookmark-icon" width="31" height="33">
@@ -92,7 +94,7 @@ function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
-                  <span style={{ width: `${Math.floor(offer.rating) * 20}%` }}></span>
+                  <span style={{width: `${Math.floor(offer.rating) * 20}%`}}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="offer__rating-value rating__value">{offer.rating}</span>
@@ -126,7 +128,9 @@ function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
                   <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
-                    <img className="offer__avatar user__avatar" src={offer.host.avatarUrl} width="74" height="74" alt="Host avatar" />
+                    <img className="offer__avatar user__avatar" src={offer.host.avatarUrl} width="74" height="74"
+                      alt="Host avatar"
+                    />
                   </div>
                   <span className="offer__user-name">
                     {offer.host.name}
@@ -139,8 +143,15 @@ function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
                   </p>
                 </div>
               </div>
-              <MemoizedReviewsList reviews={reviews} />
-              {authorizationStatus === AuthorizationStatus.Auth && <MemoizedReviewSendingForm offerId={offer.id}/>}
+              <section className="offer__reviews reviews">
+                <h2 className="reviews__title">Reviews &middot; <span
+                  className="reviews__amount"
+                >{reviews.length}
+                </span>
+                </h2>
+                <MemoizedReviewsList reviews={reviews}/>
+                {authorizationStatus === AuthorizationStatus.Auth && <MemoizedReviewSendingForm offerId={offer.id}/>}
+              </section>
             </div>
           </div>
           <section className="offer__map map">
