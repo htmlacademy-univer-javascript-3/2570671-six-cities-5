@@ -1,19 +1,18 @@
 import {Link} from 'react-router-dom';
-import {AppRoute, AuthorizationStatus} from '../../const.ts';
+import {AppRoute} from '../../const.ts';
 import {useAppDispatch, useAppSelector} from '../../hooks';
+import {memo, SyntheticEvent} from 'react';
 import {logoutAction} from '../../store/api-actions.ts';
-import {memo, useCallback} from 'react';
-import React from 'react';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const userEmail = useAppSelector((state) => state.userEmail);
+  const userEmail = useAppSelector((state) => state.user?.email);
   const favoritesQuantity = useAppSelector((state) =>
-    state.offers.filter((offer) => offer.isBookmarked).length);
-  const handleSignOut = useCallback(() => {
+    state.offers.filter((offer) => offer.isFavorite).length);
+  const handleSignOutClick = (event: SyntheticEvent) => {
+    event.preventDefault();
     dispatch(logoutAction());
-  }, [dispatch]);
+  };
 
   return (
     <header className="header">
@@ -26,31 +25,37 @@ function Header(): JSX.Element {
           </div>
           <nav className="header__nav">
             <ul className="header__nav-list">
-              {authorizationStatus === AuthorizationStatus.Auth ? (
-                <React.Fragment>
-                  <li className="header__nav-item user">
-                    <Link className="header__nav-link header__nav-link--profile" to={AppRoute.FavoritesPage}>
-                      <div className="header__avatar-wrapper user__avatar-wrapper">
-                      </div>
-                      <span className="header__user-name user__name">{userEmail}</span>
-                      <span className="header__favorite-count">{favoritesQuantity}</span>
-                    </Link>
-                  </li>
-                  <li className="header__nav-item">
-                    <a className="header__nav-link" href="#" onClick={handleSignOut}>
-                      <span className="header__signout">Sign out</span>
-                    </a>
-                  </li>
-                </React.Fragment>
-              ) : (
+              {userEmail === undefined &&
                 <li className="header__nav-item user">
-                  <Link className="header__nav-link header__nav-link--profile" to={AppRoute.LoginPage}>
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
+                  <Link to={AppRoute.LoginPage} className='header__nav-link header__nav-link--profile'>
+                    <div className="header__avatar-wrapper user__avatar-wrapper" />
                     <span className="header__login">Sign in</span>
                   </Link>
                 </li>
-              )}
+              }
+              {
+                userEmail !== undefined && favoritesQuantity !== undefined &&
+                <li className="header__nav-item user">
+                  <Link to={AppRoute.FavoritesPage} className="header__nav-link header__nav-link--profile">
+                    <div className="header__avatar-wrapper user__avatar-wrapper">
+                    </div>
+                    <span className="header__user-name user__name">{userEmail}</span>
+                    <span className="header__favorite-count">{favoritesQuantity}</span>
+                  </Link>
+                </li>
+              }
+              {
+                userEmail !== undefined &&
+                <li className="header__nav-item">
+                  <Link
+                    to={AppRoute.MainPage}
+                    className="header__nav-link"
+                    onClick={handleSignOutClick}
+                  >
+                    <span className="header__signout">Sign out</span>
+                  </Link>
+                </li>
+              }
             </ul>
           </nav>
         </div>
