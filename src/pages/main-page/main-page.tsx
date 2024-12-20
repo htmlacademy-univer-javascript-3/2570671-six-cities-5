@@ -14,6 +14,9 @@ import {BookmarkAction} from '../../types/bookmark-action.ts';
 import {AppRoute, AuthorizationStatus} from '../../const.ts';
 import MemoizedMainEmptyPage from './main-empty-page.tsx';
 import MemoizedLoadingPage from '../loading-page/loading-page.tsx';
+import {useNavigate} from 'react-router-dom';
+import {BookmarkAction} from '../../types/bookmark-action.ts';
+import {AppRoute, AuthorizationStatus} from '../../const.ts';
 
 type MainPageProps = {
   onBookmarkStatusChange: (action: BookmarkAction) => void;
