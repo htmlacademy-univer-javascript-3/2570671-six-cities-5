@@ -1,28 +1,38 @@
 import {Offers} from '../types/offer.ts';
 import {SortType} from '../types/sort.ts';
-import {OfferDetails} from '../types/offer-details.ts';
+import {OfferAdditionalInformation} from '../types/offer-additional-information.ts';
 import {createReducer} from '@reduxjs/toolkit';
 import {
   requireAuthorization,
-  selectCity,
-  selectSort,
-  setOffers,
+  chooseCity,
+  chooseSort,
+  loadOffers,
   setOffersLoadingStatus,
-  setSelectedOffer,
-  setSelectedOfferLoadingStatus, setUserEmail
+  loadChosenOffer,
+  setChosenOfferLoadingStatus,
+  setUser,
+  loadFavoriteOffers,
+  updateComment,
+  updateRating,
+  clearFavoriteOffers,
+  addReview, loadOfferAdditionalInformation, setReviewSendingStatus
 } from './action.ts';
 import {AuthorizationStatus} from '../const.ts';
+import {User} from '../types/user.ts';
 
 export type AppState = {
   offers: Offers;
+  bookmarkedOffers?: Offers;
   cities: string[];
-  selectedCity: string;
+  chosenCity: string;
   sortType: SortType;
-  selectedOffer?: OfferDetails;
+  chosenOffer?: OfferAdditionalInformation;
   isOffersLoading: boolean;
-  isSelectedOfferLoading: boolean;
+  isChosenOfferLoading: boolean;
   authorizationStatus: AuthorizationStatus;
-  userEmail: string;
+  user?: User;
+  comment: string;
+  rating: number;
 }
 
 const initialState: AppState = {
@@ -35,39 +45,83 @@ const initialState: AppState = {
     'Hamburg',
     'Dusseldorf'
   ],
-  selectedCity: 'Paris',
+  chosenCity: 'Paris',
   sortType: SortType.Popular,
-  selectedOffer: undefined,
+  chosenOffer: undefined,
   isOffersLoading: false,
-  isSelectedOfferLoading: false,
+  isChosenOfferLoading: false,
   authorizationStatus: AuthorizationStatus.Unknown,
-  userEmail: '',
+  user: undefined,
+  comment: '',
+  rating: 0,
 };
 
 export const reducer = createReducer<AppState>(initialState, (builder) => {
   builder
-    .addCase(selectCity, (state, action) => {
-      state.selectedCity = action.payload;
+    .addCase(chooseCity, (state, action) => {
+      state.chosenCity = action.payload;
     })
-    .addCase(selectSort, (state, action) => {
+    .addCase(chooseSort, (state, action) => {
       state.sortType = action.payload;
     })
-    .addCase(setOffers, (state, action) => {
+    .addCase(loadOffers, (state, action) => {
       state.offers = action.payload;
+    })
+    .addCase(loadFavoriteOffers, (state, action) => {
+      state.bookmarkedOffers = action.payload;
     })
     .addCase(setOffersLoadingStatus, (state, action) => {
       state.isOffersLoading = action.payload;
     })
-    .addCase(setSelectedOffer, (state, action) => {
-      state.selectedOffer = action.payload;
+    .addCase(updateComment, (state, {payload}) => {
+      state.comment = payload;
     })
-    .addCase(setSelectedOfferLoadingStatus, (state, action) => {
-      state.isSelectedOfferLoading = action.payload;
+    .addCase(updateRating, (state, {payload}) => {
+      state.rating = payload;
+    })
+    .addCase(clearFavoriteOffers, (state) => {
+      state.bookmarkedOffers = undefined;
+      if (state.chosenOffer?.offer !== undefined) {
+        state.chosenOffer.offer.isFavorite = false;
+      }
+    })
+    .addCase(loadOfferAdditionalInformation, (state, {payload}) => {
+      state.offers = state.offers.map((offer) =>
+        offer.id === payload.id ? payload : offer,
+      );
+      if (state.chosenOffer?.offer.id === payload.id) {
+        state.chosenOffer.offer = payload;
+      }
+      if (state.chosenOffer?.offersNearby !== undefined) {
+        state.chosenOffer.offersNearby = state.chosenOffer?.offersNearby.map((offer) =>
+          offer.id === payload.id ? payload : offer,
+        );
+      }
+      state.bookmarkedOffers = state.bookmarkedOffers?.filter((offer) => offer.id !== payload.id);
+      if (payload.isFavorite) {
+        state.bookmarkedOffers?.push(payload);
+      }
+    })
+    .addCase(loadChosenOffer, (state, action) => {
+      state.chosenOffer = action.payload;
+    })
+    .addCase(addReview, (state, { payload }) => {
+      if (state.chosenOffer !== undefined) {
+        state.chosenOffer.reviews.unshift(payload);
+      }
+    })
+    .addCase(setChosenOfferLoadingStatus, (state, action) => {
+      state.isChosenOfferLoading = action.payload;
+    })
+    .addCase(setReviewSendingStatus, (state, action) => {
+      if (state.chosenOffer !== undefined) {
+        state.chosenOffer.isReviewSending = action.payload;
+      }
     })
     .addCase(requireAuthorization, (state, action) => {
       state.authorizationStatus = action.payload;
     })
-    .addCase(setUserEmail, (state, { payload }) => {
-      state.userEmail = payload;
+    .addCase(setUser, (state, action) => {
+      state.user = action.payload;
     });
 });

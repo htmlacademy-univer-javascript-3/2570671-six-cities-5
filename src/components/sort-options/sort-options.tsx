@@ -1,12 +1,12 @@
 import {SortType} from '../../types/sort.ts';
-import {useState} from 'react';
+import {memo, useState} from 'react';
 
 type SortOptionsProps = {
   sortType: SortType;
   handleSortingChoose: (sortType: SortType) => void;
 }
 
-export function SortOptions({ sortType, handleSortingChoose }: SortOptionsProps) {
+function SortOptions({ sortType, handleSortingChoose }: SortOptionsProps) {
   const [isOpened, setIsOpened] = useState<boolean>();
 
   return (
@@ -43,3 +43,6 @@ export function SortOptions({ sortType, handleSortingChoose }: SortOptionsProps)
     </form>
   );
 }
+
+const MemoizedSortOptions = memo(SortOptions);
+export default MemoizedSortOptions;

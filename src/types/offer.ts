@@ -11,7 +11,7 @@ export type Offer = {
   city: City;
   location: Location;
   description: string;
-  isBookmarked: boolean;
+  isFavorite: boolean;
   isPremium: boolean;
   rating: number;
   bedrooms: number;

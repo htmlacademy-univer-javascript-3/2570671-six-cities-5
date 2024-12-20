@@ -12,33 +12,6 @@ export enum AuthorizationStatus {
   Unknown = 'UNKNOWN',
 }
 
-export const Cities = [
-  {
-    name: 'Paris',
-    id: 1,
-  },
-  {
-    name: 'Cologne',
-    id: 2,
-  },
-  {
-    name: 'Brussels',
-    id: 3,
-  },
-  {
-    name: 'Amsterdam',
-    id: 4,
-  },
-  {
-    name: 'Hamburg',
-    id: 5,
-  },
-  {
-    name: 'Dusseldorf',
-    id: 6,
-  },
-];
-
 export const URL_MARKER_DEFAULT =
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg';
 
@@ -46,8 +19,10 @@ export const URL_MARKER_CURRENT =
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';
 
 export enum OfferType {
-  Room = 'Room',
-  Apartment = 'Apartment',
+  Room = 'room',
+  Apartment = 'apartment',
+  House = 'house',
+  Hotel = 'hotel',
 }
 
 export enum APIRoute {
@@ -55,8 +30,16 @@ export enum APIRoute {
   OfferDetails = '/offers/:id',
   OfferReviews = '/comments/:id',
   OffersNearby = '/offers/:id/nearby',
+  FavoriteOffers = '/favorite',
+  ChangeFavoriteStatus = '/favorite/:id/:status',
   Login = '/login',
-  Logout = '/logout',
+  Logout = '/logout'
 }
 
 export const AUTH_TOKEN_KEY_NAME = 'six-cities-token';
+
+export const REVIEW_COMMENT_MAX_LENGTH = 300;
+
+export const REVIEW_COMMENT_MIN_LENGTH = 50;
+
+export const MIN_RATING = 1;

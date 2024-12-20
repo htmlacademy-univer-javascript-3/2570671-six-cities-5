@@ -8,6 +8,7 @@ function useMap(
 ) {
   const [map, setMap] = useState<leaflet.Map | null>(null);
   const isRenderedRef = useRef(false);
+  const {latitude, longitude, zoom} = city.location;
 
   useEffect(() => {
     if (mapRef.current === null) {
@@ -18,10 +19,10 @@ function useMap(
 
       const instance = leaflet.map(mapRef.current, {
         center: {
-          lat: city.location.latitude,
-          lng: city.location.longitude
+          lat: latitude,
+          lng: longitude
         },
-        zoom: city.location.zoom,
+        zoom: zoom,
       });
 
       leaflet
@@ -38,13 +39,13 @@ function useMap(
     } else {
       map?.setView(
         {
-          lat: city.location.latitude,
-          lng: city.location.longitude
+          lat: latitude,
+          lng: longitude
         },
-        city.location.zoom
+        zoom
       );
     }
-  }, [mapRef, city, map]);
+  }, [mapRef, city, map, latitude, longitude, zoom]);
 
   return map;
 }

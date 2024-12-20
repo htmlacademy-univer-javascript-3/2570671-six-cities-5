@@ -1,33 +1,48 @@
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppState} from '../../store/reducer.ts';
 import {Review} from '../../types/review.ts';
 import {Offer} from '../../types/offer.ts';
 import {AppDispatch} from '../../store';
-import {memo, useEffect} from 'react';
-import {fetchOfferDetailsAction} from '../../store/api-actions.ts';
+import {memo, useCallback, useEffect} from 'react';
+import {fetchOfferAdditionalInformationAction} from '../../store/api-actions.ts';
 import MemoizedLoadingPage from '../loading-page/loading-page.tsx';
 import MemoizedNotFoundPage from '../not-found-page/not-found-page.tsx';
 import MemoizedHeader from '../../components/header/header.tsx';
 import MemoizedMap from '../../components/map/map.tsx';
 import MemoizedOfferList from '../../components/offers-list/offers-list.tsx';
 import MemoizedReviewsList from '../../components/reviews-list/reviews-list.tsx';
+import {BookmarkAction} from '../../types/bookmark-action.ts';
+import {AppRoute, AuthorizationStatus} from '../../const.ts';
+import MemoizedReviewSendingForm from '../../components/review-sending-form/review-sending-form.tsx';
 
+type OfferPageProps = {
+  onBookmarkStatusChange: (action: BookmarkAction) => void;
+}
 
-function OfferPage() {
+function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
   const {id} = useParams();
-
-  const reviews = useSelector<AppState, Review[]>((state) => state.selectedOffer?.reviews ?? []);
-  const offersNearby = useSelector<AppState, Offer[]>((state) => state.selectedOffer?.offersNearby ?? []);
-  const offer = useSelector<AppState, Offer | undefined>((state) => state?.selectedOffer?.offer);
-  const isOfferLoading = useSelector<AppState, boolean>((state) => state?.isSelectedOfferLoading);
+  const reviews = useSelector<AppState, Review[]>((state) => state.chosenOffer?.reviews ?? []);
+  const offersNearby = useSelector<AppState, Offer[]>((state) => state.chosenOffer?.offersNearby ?? []);
+  const offer = useSelector<AppState, Offer | undefined>((state) => state?.chosenOffer?.offer);
+  const isOfferLoading = useSelector<AppState, boolean>((state) => state?.isChosenOfferLoading);
+  const authorizationStatus = useSelector<AppState, AuthorizationStatus>((state) => state.authorizationStatus);
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id !== undefined) {
-      dispatch(fetchOfferDetailsAction(id));
+      dispatch(fetchOfferAdditionalInformationAction(id));
     }
   }, [dispatch, id]);
+
+  const handleBookmarkChange = useCallback((action: BookmarkAction) => {
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      onBookmarkStatusChange(action);
+    } else {
+      navigate(AppRoute.LoginPage);
+    }
+  }, [authorizationStatus, navigate, onBookmarkStatusChange]);
 
   if (isOfferLoading) {
     return <MemoizedLoadingPage />;
@@ -66,7 +81,9 @@ function OfferPage() {
                 <h1 className="offer__name">
                   {offer.title}
                 </h1>
-                <button className={`offer__bookmark-button ${offer.isBookmarked && 'offer__bookmark-button--active'} button`} type="button">
+                <button className={`offer__bookmark-button ${offer.isFavorite && 'offer__bookmark-button--active'} button`} type="button"
+                  onClick={() => handleBookmarkChange({offerId: offer.id, isBookmarked: !offer?.isFavorite})}
+                >
                   <svg className="offer__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>
@@ -123,6 +140,7 @@ function OfferPage() {
                 </div>
               </div>
               <MemoizedReviewsList reviews={reviews} />
+              {authorizationStatus === AuthorizationStatus.Auth && <MemoizedReviewSendingForm offerId={offer.id}/>}
             </div>
           </div>
           <section className="offer__map map">
@@ -140,6 +158,7 @@ function OfferPage() {
             <MemoizedOfferList
               offers={offersNearby}
               className={'near-places__list places__list'}
+              onBookmarkStatusChange={handleBookmarkChange}
             />
           </section>
         </div>
