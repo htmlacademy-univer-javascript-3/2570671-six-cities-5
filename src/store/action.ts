@@ -1,18 +1,23 @@
 import {createAction} from '@reduxjs/toolkit';
-import {Offers} from '../types/offer.ts';
-import {SortType} from '../types/sort.ts';
-import {OfferDetails} from '../types/offer-details.ts';
+import {Offer, Offers} from '../types/offer.ts';
+import {SortingType} from '../types/sorting-type.ts';
+import {OfferAndAdditionalInformation} from '../types/offer-and-additional-information.ts';
 import {AuthorizationStatus} from '../const.ts';
+import {Review} from '../types/review.ts';
+import {User} from '../types/user.ts';
 
-export const selectCity = createAction<string>('chooseCity');
-
-export const selectSort = createAction<SortType>('chooseSorting');
-
-export const setOffers = createAction<Offers>('loadOffers');
+export const chooseCity = createAction<string>('chooseCity');
+export const chooseSort = createAction<SortingType>('chooseSorting');
+export const loadOffers = createAction<Offers>('loadOffers');
+export const loadFavoriteOffers = createAction<Offers | undefined>('loadFavoriteOffers');
 export const setOffersLoadingStatus = createAction<boolean>('setOffersLoadingStatus');
-
-export const setSelectedOffer = createAction<OfferDetails | undefined>('setSelectedOffer');
-export const setSelectedOfferLoadingStatus = createAction<boolean>('setSelectedOfferLoadingStatus');
-
-export const requireAuthorization = createAction<AuthorizationStatus>('user/requireAuthorization');
-export const setUserEmail = createAction<string>('setUserEmail');
+export const updateComment = createAction<string>('updateComment');
+export const updateRating = createAction<number>('updateRating');
+export const clearFavoriteOffers = createAction('clearFavoriteOffers');
+export const loadOfferAndAdditionalInformation = createAction<Offer>('loadOfferAndAdditionalInformation');
+export const loadChosenOffer = createAction<OfferAndAdditionalInformation | undefined>('loadChosenOffer');
+export const addReview = createAction<Review>('addReview');
+export const setChosenOfferLoadingStatus = createAction<boolean>('setSelectedOfferLoadingStatus');
+export const setReviewSendingStatus = createAction<boolean>('setReviewSendingStatus');
+export const requireAuthorization = createAction<AuthorizationStatus>('requireAuthorization');
+export const setUser = createAction<User | undefined>('setUser');

@@ -1,29 +1,48 @@
 import {AppRoute} from '../../const.ts';
 import {Link, useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {FormEvent, useState} from 'react';
-import {fetchOffersAction, loginAction} from '../../store/api-actions.ts';
+import {loginAction} from '../../store/api-actions.ts';
+import {Auth} from '../../types/auth.ts';
+import {ChangeEvent, memo, SyntheticEvent, useCallback, useState} from 'react';
 
 function LoginPage(): JSX.Element {
-  const selectedCity = useAppSelector((state) => state.selectedCity);
+  const chosenCity = useAppSelector((state) => state.chosenCity);
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
+  const [auth, setAuth] = useState<Auth>({
+    email: '',
+    password: '',
+  });
 
-    if (email.length > 0 && password.length > 0) {
-      dispatch(loginAction({
-        email: email,
-        password: password
-      })).then(() => {
-        dispatch(fetchOffersAction());
-        navigate(AppRoute.MainPage);
-      });
-    }
-  };
+  const handleSubmit = useCallback(
+    (event: SyntheticEvent) => {
+      event.preventDefault();
+      dispatch(loginAction(auth));
+      navigate(AppRoute.MainPage);
+    },
+    [auth, dispatch, navigate]
+  );
+
+  const onEmailChanged = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setAuth((prevAuth) => ({
+        ...prevAuth,
+        email: event.target.value,
+      }));
+    },
+    []
+  );
+
+  const onPasswordChanged = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setAuth((prevAuth) => ({
+        ...prevAuth,
+        password: event.target.value,
+      }));
+    },
+    []
+  );
 
   return (
     <div className="page page--gray page--login">
@@ -46,14 +65,14 @@ function LoginPage(): JSX.Element {
             <form onSubmit={handleSubmit} className="login__form form">
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
-                <input className="login__input form__input" type="email" name="email" value={email}
-                  onChange={(e) => setEmail(e.target.value)} placeholder="Email" required
+                <input className="login__input form__input" type="email" name="email" value={auth.email}
+                  onChange={onEmailChanged} placeholder="Email" required
                 />
               </div>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">Password</label>
-                <input className="login__input form__input" type="password" value={password}
-                  onChange={(e) => setPassword(e.target.value)} name="password" placeholder="Password" required
+                <input className="login__input form__input" type="password" value={auth.password}
+                  onChange={onPasswordChanged} name="password" placeholder="Password" required
                 />
               </div>
               <button className="login__submit form__submit button" type="submit">Sign in</button>
@@ -62,7 +81,7 @@ function LoginPage(): JSX.Element {
           <section className="locations locations--login locations--current">
             <div className="locations__item">
               <Link className="locations__item-link" to='/'>
-                <span>{selectedCity}</span>
+                <span>{chosenCity}</span>
               </Link>
             </div>
           </section>
@@ -72,4 +91,5 @@ function LoginPage(): JSX.Element {
   );
 }
 
-export default LoginPage;
+const MemoizedLoginPage = memo(LoginPage);
+export default MemoizedLoginPage;

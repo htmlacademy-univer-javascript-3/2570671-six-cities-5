@@ -1,7 +1,7 @@
 import {reducer} from './reducer.ts';
 import {configureStore} from '@reduxjs/toolkit';
-import {fetchOffersAction} from './api-actions.ts';
-import {createAPI} from '../api/api.ts';
+import {checkAuthorizationAction, fetchOffersAction} from './api-actions.ts';
+import {createAPI} from '../services/api.ts';
 import {redirect} from './middlewares/redirect.ts';
 
 export const api = createAPI();
@@ -18,5 +18,7 @@ export const store = configureStore(
   });
 
 store.dispatch(fetchOffersAction());
+store.dispatch(checkAuthorizationAction());
+
 
 export type AppDispatch = typeof store.dispatch;

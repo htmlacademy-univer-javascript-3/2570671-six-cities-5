@@ -1,26 +1,44 @@
-import {ChangeEvent, memo} from 'react';
-import {useState} from 'react';
+import {ChangeEvent, memo, SyntheticEvent, useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch} from '../../store';
+import {AppState} from '../../store/reducer.ts';
+import {MIN_RATING, REVIEW_COMMENT_MAX_LENGTH, REVIEW_COMMENT_MIN_LENGTH} from '../../const.ts';
+import {addReviewAction} from '../../store/api-actions.ts';
+import {updateComment, updateRating} from '../../store/action.ts';
 
-function ReviewSendingForm(): JSX.Element {
-  const [, setRating] = useState('1');
-  const [comment, setComment] = useState('');
+type ReviewSendingFormProps = {
+  offerId: string;
+}
 
-  function onCommentChanged(event: ChangeEvent<HTMLTextAreaElement>) {
-    setComment(event.target.value);
-  }
+function ReviewSendingForm({offerId}: ReviewSendingFormProps): JSX.Element {
+  const dispatch = useDispatch<AppDispatch>();
+  const isReviewSending = useSelector<AppState, boolean>((state) => state.chosenOffer?.isReviewSending ?? false);
+  const comment = useSelector<AppState, string>((state) => state.comment);
+  const rating = useSelector<AppState, number>((state) => state.rating);
 
-  function onRatingChanged(event: ChangeEvent<HTMLInputElement>) {
-    setRating(event.target.value);
-  }
+  const notMeetCriteria = comment.length < REVIEW_COMMENT_MIN_LENGTH || rating < MIN_RATING;
+
+  const handleSubmit = useCallback((event: SyntheticEvent) => {
+    event.preventDefault();
+    dispatch(addReviewAction({offerId, comment, rating}));
+  }, [dispatch, offerId, comment, rating]);
+
+  const handleCommentChange = useCallback(({target: {value}}: ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch(updateComment(value));
+  }, [dispatch]);
+
+  const handleRatingChange = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateRating(+value));
+  }, [dispatch]);
 
   return (
-    <form className="reviews__form form" action="#" method="post">
+    <form className="reviews__form form" onSubmit={handleSubmit}>
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
       <div
         className="reviews__rating-form form__rating"
-        onChange={onRatingChanged}
+        onChange={handleRatingChange}
       >
         <input
           className="form__rating-input visually-hidden"
@@ -105,10 +123,12 @@ function ReviewSendingForm(): JSX.Element {
       </div>
       <textarea
         className="reviews__textarea form__textarea"
+        maxLength={REVIEW_COMMENT_MAX_LENGTH}
         id="review"
         name="review"
         placeholder="Tell how was your stay, what you like and what can be improved"
-        onChange={onCommentChanged}
+        onChange={handleCommentChange}
+        disabled={isReviewSending}
         value={comment}
       />
       <div className="reviews__button-wrapper">
@@ -121,7 +141,7 @@ function ReviewSendingForm(): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled
+          disabled={notMeetCriteria || isReviewSending}
         >
           Submit
         </button>

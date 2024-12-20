@@ -1,6 +1,6 @@
 import {City} from '../../types/city.ts';
 import {URL_MARKER_CURRENT, URL_MARKER_DEFAULT} from '../../const.ts';
-import {memo, useEffect, useRef} from 'react';
+import {memo, useCallback, useEffect, useRef} from 'react';
 import useMap from '../../hooks/use-map.tsx';
 import {Offers} from '../../types/offer.ts';
 import leaflet from 'leaflet';
@@ -25,25 +25,27 @@ const currentCustomIcon = leaflet.icon({
 });
 
 function Map({city, offers, activeOfferId, className} : MapProps): JSX.Element {
-
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
-  useEffect(() => {
+  const addMarkersToMap = useCallback(() => {
     if (map) {
       offers.forEach((offer) => {
         leaflet
           .marker({
             lat: offer.location.latitude,
-            lng: offer.location.longitude
+            lng: offer.location.longitude,
           }, {
             icon: offer.id === activeOfferId ? currentCustomIcon : defaultCustomIcon,
-          }).addTo(map);
-
+          })
+          .addTo(map);
       });
-
     }
-  }, [map, offers, city, activeOfferId]);
+  }, [map, offers, activeOfferId]);
+
+  useEffect(() => {
+    addMarkersToMap();
+  }, [addMarkersToMap]);
 
   return (
     <div
@@ -55,6 +57,8 @@ function Map({city, offers, activeOfferId, className} : MapProps): JSX.Element {
 
 const MemoizedMap = memo(Map, (prevProps, nextProps) =>
   prevProps.activeOfferId === nextProps.activeOfferId &&
-  prevProps.offers.map((offer) => offer.id).join() === nextProps.offers.map((offer) => offer.id).join()
+  prevProps.city === nextProps.city &&
+  prevProps.offers.length === nextProps.offers.length &&
+  prevProps.offers.every((offer, index) => offer.id === nextProps.offers[index].id)
 );
 export default MemoizedMap;

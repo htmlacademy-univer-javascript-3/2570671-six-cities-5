@@ -1,21 +1,14 @@
 import {memo} from 'react';
+import './loading-page.css';
 
 function LoadingPage() {
   return (
-    <div style={
-      {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }
-    }
-    >
-      <div>
-        <h1>Loading</h1>
-      </div>
+    <div className="loading-screen">
+      <div className="loading-spinner"></div>
+      <p className="loading-text">Finding the best places for you...</p>
     </div>
   );
 }
+
 const MemoizedLoadingPage = memo(LoadingPage);
 export default MemoizedLoadingPage;
