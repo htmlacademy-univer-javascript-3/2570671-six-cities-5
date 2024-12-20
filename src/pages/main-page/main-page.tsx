@@ -1,22 +1,19 @@
 import {memo, useCallback, useMemo, useState} from 'react';
-import {SortType} from '../../types/sort.ts';
+import {SortingType} from '../../types/sorting-type.ts';
 import {useDispatch, useSelector} from 'react-redux';
 import {Offers} from '../../types/offer.ts';
 import {AppState} from '../../store/reducer.ts';
 import {AppDispatch} from '../../store';
 import {chooseCity, chooseSort} from '../../store/action.ts';
-import SortOptions from '../../components/sort-options/sort-options.tsx';
 import MemoizedHeader from '../../components/header/header.tsx';
 import MemoizedOfferList from '../../components/offers-list/offers-list.tsx';
 import MemoizedMap from '../../components/map/map.tsx';
-import {useNavigate} from 'react-router-dom';
 import {BookmarkAction} from '../../types/bookmark-action.ts';
 import {AppRoute, AuthorizationStatus} from '../../const.ts';
 import MemoizedMainEmptyPage from './main-empty-page.tsx';
 import MemoizedLoadingPage from '../loading-page/loading-page.tsx';
 import {useNavigate} from 'react-router-dom';
-import {BookmarkAction} from '../../types/bookmark-action.ts';
-import {AppRoute, AuthorizationStatus} from '../../const.ts';
+import MemoizedSortingOptions from '../../components/sorting-options/sorting-options.tsx';
 
 type MainPageProps = {
   onBookmarkStatusChange: (action: BookmarkAction) => void;
@@ -34,7 +31,7 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
   }, [activeOfferId]);
 
   const chosenCity = useSelector<AppState, string>((state) => state.chosenCity);
-  const chosenSort = useSelector<AppState, SortType>((state) => state.sortType);
+  const chosenSort = useSelector<AppState, SortingType>((state) => state.sortType);
   const offers = useSelector<AppState, Offers>((state) => state.offers);
   const cities = useSelector<AppState, string[]>((state) => state.cities);
   const navigate = useNavigate();
@@ -45,11 +42,11 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
     const filteredOffers = offers.filter((offer) => offer.city.name === chosenCity);
     return [...filteredOffers].sort((a, b) => {
       switch (chosenSort) {
-        case SortType.PriceLowToHigh:
+        case SortingType.PriceLowToHigh:
           return a.price - b.price;
-        case SortType.PriceHighToLow:
+        case SortingType.PriceHighToLow:
           return b.price - a.price;
-        case SortType.TopRatedFirst:
+        case SortingType.TopRatedFirst:
           return b.rating - a.rating;
         default:
           return 0;
@@ -67,7 +64,7 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
   );
 
   const handleSortingChoose = useCallback(
-    (sortType: SortType) => {
+    (sortType: SortingType) => {
       dispatch(chooseSort(sortType));
     },
     [dispatch]
@@ -123,7 +120,7 @@ function MainPage({onBookmarkStatusChange}: MainPageProps) {
                 <section className="cities__places places">
                   <h2 className="visually-hidden">Places</h2>
                   <b className="places__found">{chosenOffers.length} places to stay in {chosenCity}</b>
-                  <SortOptions
+                  <MemoizedSortingOptions
                     sortType={chosenSort}
                     handleSortingChoose={handleSortingChoose}
                   />

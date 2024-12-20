@@ -31,8 +31,7 @@ function Header(): JSX.Element {
                     <div className="header__avatar-wrapper user__avatar-wrapper" />
                     <span className="header__login">Sign in</span>
                   </Link>
-                </li>
-              }
+                </li>}
               {
                 userEmail !== undefined && favoritesQuantity !== undefined &&
                 <li className="header__nav-item user">

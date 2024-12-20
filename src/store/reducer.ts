@@ -1,5 +1,5 @@
 import {Offers} from '../types/offer.ts';
-import {SortType} from '../types/sort.ts';
+import {SortingType} from '../types/sorting-type.ts';
 import {OfferAndAdditionalInformation} from '../types/offer-and-additional-information.ts';
 import {createReducer} from '@reduxjs/toolkit';
 import {
@@ -25,7 +25,7 @@ export type AppState = {
   bookmarkedOffers?: Offers;
   cities: string[];
   chosenCity: string;
-  sortType: SortType;
+  sortType: SortingType;
   chosenOffer?: OfferAndAdditionalInformation;
   isOffersLoading: boolean;
   isChosenOfferLoading: boolean;
@@ -46,7 +46,7 @@ const initialState: AppState = {
     'Dusseldorf'
   ],
   chosenCity: 'Paris',
-  sortType: SortType.Popular,
+  sortType: SortingType.Popular,
   chosenOffer: undefined,
   isOffersLoading: false,
   isChosenOfferLoading: false,

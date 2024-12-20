@@ -1,8 +1,8 @@
 import {useNavigate, useParams} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppState} from '../../store/reducer.ts';
-import {Review} from '../../types/review.ts';
-import {Offer} from '../../types/offer.ts';
+import {Reviews} from '../../types/review.ts';
+import {Offer, Offers} from '../../types/offer.ts';
 import {AppDispatch} from '../../store';
 import {memo, useCallback, useEffect} from 'react';
 import {fetchOfferAndAdditionalInformationAction} from '../../store/api-actions.ts';
@@ -22,8 +22,8 @@ type OfferPageProps = {
 
 function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
   const {id} = useParams();
-  const reviews = useSelector<AppState, Review[]>((state) => state.chosenOffer?.reviews ?? []);
-  const offersNearby = useSelector<AppState, Offer[]>((state) => state.chosenOffer?.offersNearby ?? []);
+  const reviews = useSelector<AppState, Reviews>((state) => state.chosenOffer?.reviews ?? []);
+  const offersNearby = useSelector<AppState, Offers>((state) => state.chosenOffer?.offersNearby ?? []);
   const offer = useSelector<AppState, Offer | undefined>((state) => state?.chosenOffer?.offer);
   const isOfferLoading = useSelector<AppState, boolean>((state) => state?.isChosenOfferLoading);
   const authorizationStatus = useSelector<AppState, AuthorizationStatus>((state) => state.authorizationStatus);
@@ -144,10 +144,7 @@ function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                <h2 className="reviews__title">Reviews &middot; <span
-                  className="reviews__amount"
-                >{reviews.length}
-                </span>
+                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span>
                 </h2>
                 <MemoizedReviewsList reviews={reviews}/>
                 {authorizationStatus === AuthorizationStatus.Auth && <MemoizedReviewSendingForm offerId={offer.id}/>}
