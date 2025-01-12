@@ -68,6 +68,14 @@ export const reducer = createReducer<AppState>(initialState, (builder) => {
       state.offers = action.payload;
     })
     .addCase(loadFavoriteOffers, (state, action) => {
+      const favoriteOffers = action.payload;
+      state.offers.forEach((offer) => {
+        favoriteOffers?.forEach((favoriteOffer) => {
+          if(offer.id === favoriteOffer.id) {
+            offer.isFavorite = true;
+          }
+        });
+      });
       state.bookmarkedOffers = action.payload;
     })
     .addCase(setOffersLoadingStatus, (state, action) => {
@@ -81,6 +89,9 @@ export const reducer = createReducer<AppState>(initialState, (builder) => {
     })
     .addCase(clearFavoriteOffers, (state) => {
       state.bookmarkedOffers = undefined;
+      state.offers.forEach((offer) => {
+        offer.isFavorite = false;
+      });
       if (state.chosenOffer?.offer !== undefined) {
         state.chosenOffer.offer.isFavorite = false;
       }

@@ -12,11 +12,9 @@ export enum AuthorizationStatus {
   Unknown = 'UNKNOWN',
 }
 
-export const URL_MARKER_DEFAULT =
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/pin.svg';
+export const URL_MARKER_DEFAULT = '/img/pin.svg';
 
-export const URL_MARKER_CURRENT =
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';
+export const URL_MARKER_CURRENT = '/img/pin-active.svg';
 
 export enum OfferType {
   Room = 'room',
@@ -43,3 +41,11 @@ export const REVIEW_COMMENT_MAX_LENGTH = 300;
 export const REVIEW_COMMENT_MIN_LENGTH = 50;
 
 export const MIN_RATING = 1;
+
+export const REVIEW_COUNT_MAX = 10;
+
+export const REVIEW_COUNT_MIN = 0;
+
+export const OFFERS_NEARBY_COUNT_MAX = 4;
+
+export const OFFERS_NEARBY_COUNT_MIN = 0;
