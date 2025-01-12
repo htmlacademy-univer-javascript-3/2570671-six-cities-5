@@ -13,7 +13,7 @@ import MemoizedMap from '../../components/map/map.tsx';
 import MemoizedOfferList from '../../components/offers-list/offers-list.tsx';
 import MemoizedReviewsList from '../../components/reviews-list/reviews-list.tsx';
 import {BookmarkAction} from '../../types/bookmark-action.ts';
-import {AppRoute, AuthorizationStatus} from '../../const.ts';
+import {AppRoute, AuthorizationStatus, OFFERS_NEARBY_COUNT_MAX, OFFERS_NEARBY_COUNT_MIN} from '../../const.ts';
 import MemoizedReviewSendingForm from '../../components/review-sending-form/review-sending-form.tsx';
 
 type OfferPageProps = {
@@ -23,7 +23,7 @@ type OfferPageProps = {
 function OfferPage({onBookmarkStatusChange}: OfferPageProps) {
   const {id} = useParams();
   const reviews = useSelector<AppState, Reviews>((state) => state.chosenOffer?.reviews ?? []);
-  const offersNearby = useSelector<AppState, Offers>((state) => state.chosenOffer?.offersNearby ?? []);
+  const offersNearby = useSelector<AppState, Offers>((state) => state.chosenOffer?.offersNearby.slice(OFFERS_NEARBY_COUNT_MIN, OFFERS_NEARBY_COUNT_MAX) ?? []);
   const offer = useSelector<AppState, Offer | undefined>((state) => state?.chosenOffer?.offer);
   const isOfferLoading = useSelector<AppState, boolean>((state) => state?.isChosenOfferLoading);
   const authorizationStatus = useSelector<AppState, AuthorizationStatus>((state) => state.authorizationStatus);
